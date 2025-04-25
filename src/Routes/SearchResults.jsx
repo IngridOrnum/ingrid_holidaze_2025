@@ -1,7 +1,39 @@
+import {Filters} from "../Components/Filters/index.jsx";
+
 export function SearchResults() {
     return (
-        <>
+        <div className={"flex"}>
+            <div className={"filter-aside"}>
+                <div className={"border border-black p-2 w-fit"}>Sort by</div>
+                <div className={"flex flex-col"}>
+                    <label>Location</label>
+                    <input className={"border border-black"}/>
+                </div>
+                <div className={"flex flex-col"}>
+                    <label>Dates</label>
+                    <input className={"border border-black"}/>
+                </div>
+                <div className={"flex flex-col"}>
+                    <label>Guests</label>
+                    <input className={"border border-black"}/>
+                </div>
+               <Filters/>
+                <div>
+                    <span>Facilities</span>
+                    <div>
+                        <input type="checkbox" name="wifi" value="wifi"/>
+                        <label htmlFor="wifi">Wi-Fi</label>
+                        <input type="checkbox" name="parking" value="parking"/>
+                        <label htmlFor="parking">Parking</label>
+                        <input type="checkbox" name="breakfast" value="breakfast"/>
+                        <label htmlFor="breakfast">Breakfast</label>
+                        <input type="checkbox" name="pets" value="pets"/>
+                        <label htmlFor="pets">Pets Allowed</label>
+                    </div>
+                </div>
+                <button className={"border border-black p-2"}>Clear All Filters</button>
+            </div>
             <h1>Search Results</h1>
-        </>
-    )
+        </div>
+)
 }
