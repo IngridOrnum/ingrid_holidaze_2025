@@ -30,12 +30,16 @@ export function PriceSlider({ values, setValues }) {
                         {children}
                     </div>
                 )}
-                renderThumb={({ props }) => (
+                renderThumb={({ props }) => {
+                    const {key, ...rest} = props;
+                    return (
+
                     <div
-                        {...props}
+                        key={key}
+                        {...rest}
                         className="h-5 w-5 rounded-full bg-red-500 shadow-md cursor-pointer"
                     />
-                )}
+                )}}
             />
         </div>
     );
