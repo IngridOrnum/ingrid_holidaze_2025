@@ -1,13 +1,13 @@
 import {Filters} from "../Components/Filters/index.jsx";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {VenueCard} from "../Components/Cards/VenueCard.jsx";
-import {useState} from "react";
 
 export function SearchResults() {
 
-    const url = "https://v2.api.noroff.dev/holidaze/venues"
+    const url = "https://v2.api.noroff.dev/holidaze/venues?sort=created&sortOrder=desc"
 
     const [venues, setVenues] = useState([]);
+    const [sortOption, setSortOption] = useState("latest");
 
     useEffect(() => {
         async function getVenues () {
@@ -24,10 +24,35 @@ export function SearchResults() {
         getVenues();
     }, []);
 
+    const sortedVenues = [...venues].sort((a, b) => {
+        if (sortOption === "price-low-high") {
+            return a.price - b.price;
+        } else if (sortOption === "price-high-low") {
+            return b.price - a.price;
+        } else if (sortOption === "latest")
+        {
+            return new Date(b.created) - new Date(a.created);
+        }
+        return 0;
+    })
+
     return (
         <div className={"flex"}>
             <div className={"filter-aside"}>
-                <div className={"border border-black p-2 w-fit"}>Sort by</div>
+                <div className={"flex flex-col"}>
+                    <label htmlFor="sort">Sort by</label>
+                    <select
+                        name="sort"
+                        id="sort"
+                        value={sortOption}
+                        onChange={(e) => setSortOption(e.target.value)}
+                        className="border border-black p-1"
+                    >
+                        <option value="latest">Latest</option>
+                        <option value="price-high-low">Price high-low</option>
+                        <option value="price-low-high">Price low-high</option>
+                    </select>
+                </div>
                 <div className={"flex flex-col"}>
                     <label>Location</label>
                     <input className={"border border-black"}/>
@@ -56,10 +81,10 @@ export function SearchResults() {
                 </div>
                 <button className={"border border-black p-2"}>Clear All Filters</button>
             </div>
-            <div>
+            <div className={"flex flex-col items-center"}>
                 <h1>Search Results</h1>
                 <div className={"flex flex-wrap items-center justify-center"}>
-                    {venues.map((venue) => (
+                    {sortedVenues.map((venue) => (
                         <VenueCard key={venue.id} venue={venue}/>
                     ))}
                 </div>

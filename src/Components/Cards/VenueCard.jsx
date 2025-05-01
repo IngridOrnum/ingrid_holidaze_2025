@@ -8,7 +8,7 @@ export function VenueCard({venue}) {
     return (
         <>
             <Link to={`/single-venue/${venue.id}`}>
-                <div key={venue.id} className={"flex flex-col overflow-hidden rounded w-[240px]"}>
+                <div key={venue.id} className={"flex flex-col overflow-hidden rounded w-[240px] cursor-pointer"}>
                     <div className={"relative"}>
                         <Rating/>
                         {firstImage && (
@@ -24,7 +24,7 @@ export function VenueCard({venue}) {
                             <p className={"font-title text-custom-text"}>{venue.name}</p>
                             <p className={"font-text text-custom-text"}>{venue.location?.city}, {venue.location?.country}</p>
                         </div>
-                        <p className={"font-text text-custom-text"}>{venue.price} NOK</p>
+                        <p className={"font-text text-custom-text"}>{venue.price} NOK / night</p>
                     </div>
                 </div>
             </Link>
