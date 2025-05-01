@@ -2,12 +2,15 @@ import {Filters} from "../Components/Filters/index.jsx";
 import {useEffect, useState} from "react";
 import {VenueCard} from "../Components/Cards/VenueCard.jsx";
 
+
 export function SearchResults() {
 
     const url = "https://v2.api.noroff.dev/holidaze/venues?sort=created&sortOrder=desc"
 
     const [venues, setVenues] = useState([]);
     const [sortOption, setSortOption] = useState("latest");
+    const [priceRange, setPriceRange] = useState([0, 10000]);
+
 
     useEffect(() => {
         async function getVenues () {
@@ -24,7 +27,11 @@ export function SearchResults() {
         getVenues();
     }, []);
 
-    const sortedVenues = [...venues].sort((a, b) => {
+    const filteredVenues = venues.filter((venue) => {
+        return venue.price >= priceRange[0] && venue.price <= priceRange[1];
+    });
+
+    const sortedVenues = [...filteredVenues].sort((a, b) => {
         if (sortOption === "price-low-high") {
             return a.price - b.price;
         } else if (sortOption === "price-high-low") {
@@ -65,7 +72,7 @@ export function SearchResults() {
                     <label>Guests</label>
                     <input className={"border border-black"}/>
                 </div>
-               <Filters/>
+               <Filters priceRange={priceRange} setPriceRange={setPriceRange} />
                 <div>
                     <span>Facilities</span>
                     <div>

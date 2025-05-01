@@ -1,8 +1,6 @@
 import {PriceSlider} from "./Slider.jsx";
-import { useState } from "react";
 
-export function Filters () {
-    const [priceRange, setPriceRange] = useState([0, 10000]);
+export function Filters ({ priceRange, setPriceRange }) {
 
     return (
         <div className="my-4">

@@ -18,10 +18,10 @@ export function PriceSlider({ values, setValues }) {
                 renderTrack={({ props, children }) => (
                     <div
                         {...props}
-                        className="h-1 w-full rounded bg-gray-300"
+                        className="h-1 w-full rounded bg-gray-300 flex align-middle"
                     >
                         <div
-                            className="h-1 bg-red-500"
+                            className="h-1 bg-primary-orange"
                             style={{
                                 width: `${(values[1] - values[0]) / (MAX - MIN) * 100}%`,
                                 marginLeft: `${(values[0] - MIN) / (MAX - MIN) * 100}%`,
@@ -37,7 +37,7 @@ export function PriceSlider({ values, setValues }) {
                     <div
                         key={key}
                         {...rest}
-                        className="h-5 w-5 rounded-full bg-red-500 shadow-md cursor-pointer"
+                        className="h-5 w-5 rounded-full bg-primary-orange shadow-md cursor-pointer"
                     />
                 )}}
             />
