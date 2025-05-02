@@ -3,20 +3,32 @@ import {useEffect, useState} from "react";
 import {VenueCard} from "../Components/Cards/VenueCard.jsx";
 import {filterVenues} from "../Utils/filterVenues.jsx";
 import {sortVenues} from "../Utils/sortVenues.jsx";
+import {Guests} from "../Components/Filters/Guests.jsx";
 
 export function SearchResults() {
 
     const url = "https://v2.api.noroff.dev/holidaze/venues?sort=created&sortOrder=desc"
 
     const [venues, setVenues] = useState([]);
-    const [sortOption, setSortOption] = useState("latest");
     const [priceRange, setPriceRange] = useState([0, 10000]);
     const [facilities, setFacilities] = useState([]);
-    const filteredVenues = filterVenues({venues, priceRange, facilities});
+    const [adults, setAdults] = useState(1);
+    const [children, setChildren] = useState(0);
+    const totalGuests = adults + children;
+
+    const filteredVenues = filterVenues({
+        venues,
+        priceRange,
+        facilities,
+        totalGuests,
+    });
+
+    const [sortOption, setSortOption] = useState("latest");
     const sortedVenues = sortVenues(filteredVenues, sortOption);
 
+
     useEffect(() => {
-        async function getVenues () {
+        async function getVenues() {
             try {
                 const res = await fetch(url);
                 if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
@@ -27,6 +39,7 @@ export function SearchResults() {
                 console.error("Error fetching venues:", error)
             }
         }
+
         getVenues();
     }, []);
 
@@ -55,15 +68,19 @@ export function SearchResults() {
                     <label>Dates</label>
                     <input className={"border border-black"}/>
                 </div>
-                <div className={"flex flex-col"}>
-                    <label>Guests</label>
-                    <input className={"border border-black"}/>
-                </div>
-               <Filters
-                   priceRange={priceRange}
-                   setPriceRange={setPriceRange}
-                   facilities={facilities}
-                   setFacilities={setFacilities}/>
+               <Guests
+                   adults={adults}
+                   setAdults={setAdults}
+                   children={children}
+                   setChildren={setChildren}
+               />
+                <Filters
+                    priceRange={priceRange}
+                    setPriceRange={setPriceRange}
+                    facilities={facilities}
+                    setFacilities={setFacilities}
+                    setChildren={setChildren}
+                    setAdults={setAdults}/>
                 <div>
                     <span>Facilities</span>
                     <div>
@@ -88,5 +105,5 @@ export function SearchResults() {
                 </div>
             </div>
         </div>
-)
+    )
 }
