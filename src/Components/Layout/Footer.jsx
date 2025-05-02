@@ -9,6 +9,5 @@ export function Footer() {
                 </div>
             </Link>
         </footer>
-
     )
 }

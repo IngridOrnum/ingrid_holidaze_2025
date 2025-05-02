@@ -1,1 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Quicksand:wght@300..700&display=swap');
+
 @import "tailwindcss";
+
+@theme {
+    --font-title: 'Fraunces', serif;
+    --font-text: 'Quicksand', sans-serif;
+
+    --color-primary-orange: #F96749;
+    --color-secondary-beige: #F2EADC;
+    --color-bg-color: #FFFCF7;
+    --color-custom-white: #FFFEFC;
+    --color-text: #420C1B;
+    --color-text-gray: #757575;
+}
