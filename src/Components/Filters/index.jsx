@@ -8,7 +8,7 @@ export function Filters ({ priceRange, setPriceRange }) {
             <PriceSlider values={priceRange} setValues={setPriceRange} />
             <div className="flex justify-between text-sm mt-2">
                 <span>{priceRange[0]} NOK</span>
-                <span>{priceRange[1]} NOK</span>
+                <span>{priceRange[1]} NOK +</span>
             </div>
         </div>
     )

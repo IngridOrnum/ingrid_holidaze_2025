@@ -5,7 +5,7 @@ const MAX = 10000;
 
 export function PriceSlider({ values, setValues }) {
     if (!Array.isArray(values) || values.length < 2) {
-        return null; // eller vis en spinner/error
+        return null;
     }
     return (
         <div className="w-full px-4">

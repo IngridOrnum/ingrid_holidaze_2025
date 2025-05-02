@@ -1,7 +1,8 @@
 import {Filters} from "../Components/Filters/index.jsx";
 import {useEffect, useState} from "react";
 import {VenueCard} from "../Components/Cards/VenueCard.jsx";
-
+import {filterVenues} from "../Utils/filterVenues.jsx";
+import {sortVenues} from "../Utils/sortVenues.jsx";
 
 export function SearchResults() {
 
@@ -10,7 +11,9 @@ export function SearchResults() {
     const [venues, setVenues] = useState([]);
     const [sortOption, setSortOption] = useState("latest");
     const [priceRange, setPriceRange] = useState([0, 10000]);
-
+    const [facilities, setFacilities] = useState([]);
+    const filteredVenues = filterVenues({venues, priceRange, facilities});
+    const sortedVenues = sortVenues(filteredVenues, sortOption);
 
     useEffect(() => {
         async function getVenues () {
@@ -26,22 +29,6 @@ export function SearchResults() {
         }
         getVenues();
     }, []);
-
-    const filteredVenues = venues.filter((venue) => {
-        return venue.price >= priceRange[0] && venue.price <= priceRange[1];
-    });
-
-    const sortedVenues = [...filteredVenues].sort((a, b) => {
-        if (sortOption === "price-low-high") {
-            return a.price - b.price;
-        } else if (sortOption === "price-high-low") {
-            return b.price - a.price;
-        } else if (sortOption === "latest")
-        {
-            return new Date(b.created) - new Date(a.created);
-        }
-        return 0;
-    })
 
     return (
         <div className={"flex"}>
@@ -72,7 +59,11 @@ export function SearchResults() {
                     <label>Guests</label>
                     <input className={"border border-black"}/>
                 </div>
-               <Filters priceRange={priceRange} setPriceRange={setPriceRange} />
+               <Filters
+                   priceRange={priceRange}
+                   setPriceRange={setPriceRange}
+                   facilities={facilities}
+                   setFacilities={setFacilities}/>
                 <div>
                     <span>Facilities</span>
                     <div>
