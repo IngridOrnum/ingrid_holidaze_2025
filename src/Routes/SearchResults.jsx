@@ -69,7 +69,6 @@ export function SearchResults() {
                     <input className={"border border-black"}/>
                 </div>
                 <div className={"flex flex-col"}>
-                    <span>Dates</span>
                     <BookingCalendar
                     selectedDates={selectedDates}
                     setSelectedDates={setSelectedDates}/>
