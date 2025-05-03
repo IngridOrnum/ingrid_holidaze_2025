@@ -4,10 +4,11 @@ import {VenueCard} from "../Components/Cards/VenueCard.jsx";
 import {filterVenues} from "../Utils/filterVenues.jsx";
 import {sortVenues} from "../Utils/sortVenues.jsx";
 import {Guests} from "../Components/Filters/Guests.jsx";
+import {BookingCalendar} from "../Components/Filters/Calendar.jsx";
 
 export function SearchResults() {
 
-    const url = "https://v2.api.noroff.dev/holidaze/venues?sort=created&sortOrder=desc"
+    const url = "https://v2.api.noroff.dev/holidaze/venues?_bookings=true&sort=created&sortOrder=desc"
 
     const [venues, setVenues] = useState([]);
     const [priceRange, setPriceRange] = useState([0, 10000]);
@@ -15,12 +16,15 @@ export function SearchResults() {
     const [adults, setAdults] = useState(1);
     const [children, setChildren] = useState(0);
     const totalGuests = adults + children;
+    const [selectedDates, setSelectedDates] = useState([]);
+
 
     const filteredVenues = filterVenues({
         venues,
         priceRange,
         facilities,
         totalGuests,
+        selectedDates
     });
 
     const [sortOption, setSortOption] = useState("latest");
@@ -65,8 +69,10 @@ export function SearchResults() {
                     <input className={"border border-black"}/>
                 </div>
                 <div className={"flex flex-col"}>
-                    <label>Dates</label>
-                    <input className={"border border-black"}/>
+                    <span>Dates</span>
+                    <BookingCalendar
+                    selectedDates={selectedDates}
+                    setSelectedDates={setSelectedDates}/>
                 </div>
                <Guests
                    adults={adults}
