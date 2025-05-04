@@ -2,7 +2,7 @@ import {Rating} from "../Rating/Rating.jsx";
 import {Link} from "react-router-dom";
 
 export function VenueCard({venue}) {
-    const firstImage = venue.media?.[0]?.url;
+    const firstImage = venue.media?.[0]?.url || "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg";
     const imageAlt = venue.media?.[0]?.alt || "Venue image";
 
     return (
