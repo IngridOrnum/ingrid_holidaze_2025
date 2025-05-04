@@ -8,9 +8,6 @@ import {BookingCalendar} from "../Components/Filters/Calendar.jsx";
 import {Facilities} from "../Components/Filters/Facilities.jsx";
 
 export function SearchResults() {
-
-    const url = "https://v2.api.noroff.dev/holidaze/venues?_bookings=true&sort=created&sortOrder=desc"
-
     const [venues, setVenues] = useState([]);
     const [priceRange, setPriceRange] = useState([0, 10000]);
     const [facilities, setFacilities] = useState([]);
@@ -19,6 +16,9 @@ export function SearchResults() {
     const totalGuests = adults + children;
     const [selectedDates, setSelectedDates] = useState([]);
 
+    const [page, setPage] = useState(1);
+    const [moreToLoad, setMoreToLoad] = useState(true);
+    const limit = 20;
 
     const filteredVenues = filterVenues({
         venues,
@@ -31,22 +31,55 @@ export function SearchResults() {
     const [sortOption, setSortOption] = useState("latest");
     const sortedVenues = sortVenues(filteredVenues, sortOption);
 
+    console.log("Total sorted venues:", sortedVenues.length);
+    const uniqueIds = new Set(sortedVenues.map((v) => v.id));
+    console.log("Unique venue ids:", uniqueIds.size);
+
+    async function getVenues() {
+        try {
+            const sortKey = sortOption === "latest" ? "created" : "price";
+            const sortOrder = sortOption === "price-low-high" ? "asc" : "desc";
+
+            const res = await fetch(
+                `https://v2.api.noroff.dev/holidaze/venues?_bookings=true&sort=${sortKey}&sortOrder=${sortOrder}&limit=${limit}&page=${page}`
+            );
+
+            if (!res.ok) {
+                console.error(`HTTP error! status: ${res.status}`);
+                return;
+            }
+
+            const data = await res.json();
+            if (!data.data) {
+                console.error("Data not found in response");
+                return;
+            }
+
+            setVenues((prev) => {
+                const newVenues = data.data.filter(
+                    (newVenue) => !prev.some((venue) => venue.id === newVenue.id)
+                );
+                return [...prev, ...newVenues];
+            });
+
+            if (data.data.length < limit) {
+                setMoreToLoad(false);
+            }
+        } catch (error) {
+            console.error("Error fetching venues:", error)
+        }
+    }
 
     useEffect(() => {
-        async function getVenues() {
-            try {
-                const res = await fetch(url);
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                const data = await res.json();
-                if (!data.data) throw new Error("Data not found in response");
-                setVenues(data.data);
-            } catch (error) {
-                console.error("Error fetching venues:", error)
-            }
-        }
+        setVenues([]);
+        setPage(1);
+    }, [sortOption]);
 
-        getVenues();
-    }, []);
+    useEffect(() => {
+        (async () => {
+            await getVenues();
+        })();
+    }, [page, sortOption]);
 
     function handleClearFilters() {
         setPriceRange([0, 10000]);
@@ -55,6 +88,12 @@ export function SearchResults() {
         setChildren(0);
         setSelectedDates([]);
         setSortOption("latest");
+
+        setVenues([]);
+        setPage(1);
+        setMoreToLoad(true);
+
+        window.scrollTo({top: 0, behavior: "smooth"});
     }
 
     return (
@@ -78,11 +117,10 @@ export function SearchResults() {
                     <label>Location</label>
                     <input className={"border border-black"}/>
                 </div>
-                <div className={"flex flex-col"}>
-                    <BookingCalendar
-                        selectedDates={selectedDates}
-                        setSelectedDates={setSelectedDates}/>
-                </div>
+                <BookingCalendar
+                    selectedDates={selectedDates}
+                    setSelectedDates={setSelectedDates}
+                />
                 <Guests
                     adults={adults}
                     setAdults={setAdults}
@@ -114,6 +152,14 @@ export function SearchResults() {
                         <VenueCard key={venue.id} venue={venue}/>
                     ))}
                 </div>
+                {moreToLoad && (
+                    <button
+                        className={"p-2 border border-black cursor-pointer"}
+                        onClick={() => setPage((prev) => prev + 1)}
+                    >
+                        Load More
+                    </button>
+                )}
             </div>
         </div>
     )

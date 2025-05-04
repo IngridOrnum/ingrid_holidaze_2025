@@ -36,7 +36,7 @@ export function SingleVenue() {
         <div className={"flex flex-col items-center justify-center"}>
             {singleVenue ? (
                 <div>
-                    <img src={singleVenue.media[0].url} alt={singleVenue.media[0].url || singleVenue.name}/>
+                    <img src={singleVenue.media[0]?.url || "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg"} alt={singleVenue.media[0]?.alt || singleVenue.name}/>
                     <div className={"flex justify-between"}>
                         <div>
                             <h1 className={"font-title text-custom-text text-3xl"}>{singleVenue.name}</h1>
