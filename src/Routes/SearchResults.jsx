@@ -1,3 +1,4 @@
+import { useSearchParams } from "react-router-dom";
 import {Filters} from "../Components/Filters/index.jsx";
 import {useEffect, useState} from "react";
 import {VenueCard} from "../Components/Cards/VenueCard.jsx";
@@ -10,6 +11,9 @@ import {Search} from "../Components/Filters/Search.jsx";
 import {API_VENUES} from "../Api/Constants.jsx";
 
 export function SearchResults() {
+    const [searchParams] = useSearchParams();
+    const initialQuery = searchParams.get("q") || "";
+    const [searchQuery, setSearchQuery] = useState(initialQuery);
     const [venues, setVenues] = useState([]);
     const [priceRange, setPriceRange] = useState([0, 10000]);
     const [facilities, setFacilities] = useState([]);
@@ -17,7 +21,6 @@ export function SearchResults() {
     const [children, setChildren] = useState(0);
     const totalGuests = adults + children;
     const [selectedDates, setSelectedDates] = useState([]);
-    const [searchQuery, setSearchQuery] = useState("");
 
     const [page, setPage] = useState(1);
     const [moreToLoad, setMoreToLoad] = useState(true);
@@ -46,11 +49,17 @@ export function SearchResults() {
             let url;
 
             if (searchQuery.trim()) {
-                // Use only the search endpoint, without extra query params
-                url = `${API_VENUES}/search?q=${encodeURIComponent(searchQuery)}`;
+                const params = new URLSearchParams({ q: searchQuery.trim() });
+                url = `${API_VENUES}/search?${params.toString()}`;
             } else {
-                // Use standard endpoint with sorting and paging
-                url = `${API_VENUES}?_bookings=true&sort=${sortKey}&sortOrder=${sortOrder}&limit=${limit}&page=${page}`;
+                const params = new URLSearchParams({
+                    _bookings: "true",
+                    sort: sortKey,
+                    sortOrder: sortOrder,
+                    limit: limit.toString(),
+                    page: page.toString(),
+                });
+                url = `${API_VENUES}?${params.toString()}`;
             }
 
             const res = await fetch(url);
@@ -91,7 +100,8 @@ export function SearchResults() {
     useEffect(() => {
         setVenues([]);
         setPage(1);
-    }, [sortOption]);
+        setMoreToLoad(true)
+    }, [sortOption, searchQuery]);
 
     useEffect(() => {
         (async () => {
@@ -106,6 +116,7 @@ export function SearchResults() {
         setChildren(0);
         setSelectedDates([]);
         setSortOption("latest");
+        setSearchQuery("");
 
         setVenues([]);
         setPage(1);
