@@ -6,6 +6,8 @@ import {sortVenues} from "../Utils/sortVenues.jsx";
 import {Guests} from "../Components/Filters/Guests.jsx";
 import {BookingCalendar} from "../Components/Filters/Calendar.jsx";
 import {Facilities} from "../Components/Filters/Facilities.jsx";
+import {Search} from "../Components/Filters/Search.jsx";
+import {API_VENUES} from "../Api/Constants.jsx";
 
 export function SearchResults() {
     const [venues, setVenues] = useState([]);
@@ -15,6 +17,7 @@ export function SearchResults() {
     const [children, setChildren] = useState(0);
     const totalGuests = adults + children;
     const [selectedDates, setSelectedDates] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const [page, setPage] = useState(1);
     const [moreToLoad, setMoreToLoad] = useState(true);
@@ -40,10 +43,17 @@ export function SearchResults() {
             const sortKey = sortOption === "latest" ? "created" : "price";
             const sortOrder = sortOption === "price-low-high" ? "asc" : "desc";
 
-            const res = await fetch(
-                `https://v2.api.noroff.dev/holidaze/venues?_bookings=true&sort=${sortKey}&sortOrder=${sortOrder}&limit=${limit}&page=${page}`
-            );
+            let url;
 
+            if (searchQuery.trim()) {
+                // Use only the search endpoint, without extra query params
+                url = `${API_VENUES}/search?q=${encodeURIComponent(searchQuery)}`;
+            } else {
+                // Use standard endpoint with sorting and paging
+                url = `${API_VENUES}?_bookings=true&sort=${sortKey}&sortOrder=${sortOrder}&limit=${limit}&page=${page}`;
+            }
+
+            const res = await fetch(url);
             if (!res.ok) {
                 console.error(`HTTP error! status: ${res.status}`);
                 return;
@@ -55,15 +65,23 @@ export function SearchResults() {
                 return;
             }
 
-            setVenues((prev) => {
-                const newVenues = data.data.filter(
-                    (newVenue) => !prev.some((venue) => venue.id === newVenue.id)
-                );
-                return [...prev, ...newVenues];
-            });
-
-            if (data.data.length < limit) {
+            if (searchQuery.trim()) {
+                // Replace venue list when searching
+                setVenues(data.data);
                 setMoreToLoad(false);
+            } else {
+                // Append to venue list when paginating
+                setVenues((prev) => {
+                    const newVenues = data.data.filter(
+                        (newVenue) => !prev.some((venue) => venue.id === newVenue.id)
+                    );
+                    return [...prev, ...newVenues];
+                });
+
+
+                if (data.data.length < limit) {
+                    setMoreToLoad(false);
+                }
             }
         } catch (error) {
             console.error("Error fetching venues:", error)
@@ -79,7 +97,7 @@ export function SearchResults() {
         (async () => {
             await getVenues();
         })();
-    }, [page, sortOption]);
+    }, [page, sortOption, searchQuery]);
 
     function handleClearFilters() {
         setPriceRange([0, 10000]);
@@ -92,8 +110,6 @@ export function SearchResults() {
         setVenues([]);
         setPage(1);
         setMoreToLoad(true);
-
-        window.scrollTo({top: 0, behavior: "smooth"});
     }
 
     return (
@@ -113,10 +129,12 @@ export function SearchResults() {
                         <option value="price-low-high">Price low-high</option>
                     </select>
                 </div>
-                <div className={"flex flex-col"}>
-                    <label>Location</label>
-                    <input className={"border border-black"}/>
-                </div>
+                <Search
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                    setVenues={setVenues}
+                    setPage={setPage}
+                />
                 <BookingCalendar
                     selectedDates={selectedDates}
                     setSelectedDates={setSelectedDates}
