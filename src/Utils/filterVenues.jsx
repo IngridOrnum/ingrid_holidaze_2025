@@ -1,18 +1,44 @@
-export function filterVenues ({venues, priceRange, facilities, totalGuests, selectedDates}) {
+export function filterVenues({ venues, priceRange, facilities, totalGuests, selectedDates }) {
     return venues.filter((venue) => {
-        const withinSetPrice = venue.price >= priceRange[0] && venue.price <= priceRange[1];
-        const hasFacilities = facilities.length === 0 || facilities.every((facility) => venue.meta?.[facility] === true)
-        const capacity = venue.maxGuests >= totalGuests;
+        // 1. Filter by price
+        if (venue.price < priceRange[0] || venue.price > priceRange[1]) {
+            return false;
+        }
 
-        const isAvailable = selectedDates.length === 0 || selectedDates.every((selectedDate) => {
-            const selected = new Date(selectedDate);
-            return venue.bookings.every((booking) => {
-                const from = new Date(booking.dateFrom);
-                const to = new Date(booking.dateTo);
-                return selected < from || selected > to;
+        // 2. Filter by guest capacity
+        if (venue.maxGuests < totalGuests) {
+            return false;
+        }
+
+        // 3. Filter by facilities
+        if (facilities.length > 0) {
+            for (const facility of facilities) {
+                // Check if venue.meta exists and has the facility
+                if (!venue.meta || venue.meta[facility] !== true) {
+                    return false;
+                }
+            }
+        }
+
+        // 4. Filter by selected dates
+        if (selectedDates.length === 2 && venue.bookings?.length > 0) {
+            const [startDate, endDate] = selectedDates.map((d) => new Date(d));
+
+            const isUnavailable = venue.bookings.some((booking) => {
+                const bookingStart = new Date(booking.dateFrom);
+                const bookingEnd = new Date(booking.dateTo);
+
+                // Check for date overlap
+                return (
+                    (startDate <= bookingEnd && endDate >= bookingStart)
+                );
             });
-        });
 
-        return withinSetPrice && hasFacilities && capacity && isAvailable;
+            if (isUnavailable) {
+                return false;
+            }
+        }
+
+        return true; // ✅ Passed all filters
     });
 }
