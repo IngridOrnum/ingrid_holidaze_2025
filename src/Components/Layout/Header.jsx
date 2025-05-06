@@ -13,6 +13,12 @@ export function Header() {
                 <Link to={"/register"}>
                     <button className={"text-primary-orange border border-primary-orange cursor-pointer w-[100px] py-2 rounded hover:bg-custom-white hover:text-primary-orange"}>Register</button>
                 </Link>
+                <Link to="/logout">
+                    <button className="text-primary-orange border border-primary-orange cursor-pointer w-[100px] py-2 rounded hover:bg-custom-white hover:text-primary-orange">
+                        Logout
+                    </button>
+                </Link>
+
             </div>
         </header>
     )
