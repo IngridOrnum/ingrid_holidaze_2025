@@ -75,18 +75,15 @@ export function SearchResults() {
             }
 
             if (searchQuery.trim()) {
-                // Replace venue list when searching
                 setVenues(data.data);
                 setMoreToLoad(false);
             } else {
-                // Append to venue list when paginating
                 setVenues((prev) => {
                     const newVenues = data.data.filter(
                         (newVenue) => !prev.some((venue) => venue.id === newVenue.id)
                     );
                     return [...prev, ...newVenues];
                 });
-
 
                 if (data.data.length < limit) {
                     setMoreToLoad(false);

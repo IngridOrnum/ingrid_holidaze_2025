@@ -10,8 +10,8 @@ import {CustomerProfile} from "./Routes/Customer/CustomerProfile.jsx";
 import {VenueManagerProfile} from "./Routes/VenueManager/VenueManagerProfile.jsx";
 import {Layout} from "./Components/Layout/index.jsx";
 import {SearchResults} from "./Routes/SearchResults.jsx";
-import {Register} from "./Routes/Register.jsx";
-import {Login} from "./Routes/Login.jsx";
+import {OnRegister} from "./Routes/Auth/Register.jsx";
+import {Login} from "./Routes/Auth/Login.jsx";
 
 const router = createBrowserRouter([
     {
@@ -28,7 +28,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "/register",
-                element: <Register/>
+                element: <OnRegister/>
             },
             {
                 path: "/single-venue/:id",
