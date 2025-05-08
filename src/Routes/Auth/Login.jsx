@@ -1,10 +1,12 @@
 import { useState } from "react";
 import {Login} from "../../Api/Auth/Login.jsx";
+import {useNavigate} from "react-router-dom";
 
 
 export function OnLogin() {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
+    const navigate = useNavigate();
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -19,6 +21,9 @@ export function OnLogin() {
 
             localStorage.setItem("accessToken", response.data.accessToken);
             localStorage.setItem("user", JSON.stringify(response.data));
+
+            navigate("/");
+            window.location.reload();
 
             setSuccess("Login successful!");
             setError(null);
