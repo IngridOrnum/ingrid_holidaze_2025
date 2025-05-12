@@ -1,5 +1,5 @@
 import {Register} from "../../Api/Auth/Register.jsx";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 export function OnRegister() {
@@ -21,6 +21,10 @@ export function OnRegister() {
             setError("Passwords do not match");
             return;
         }
+
+        useEffect(() => {
+            document.title = 'Holidaze - Register'
+        }, []);
 
         try {
             const response = await Register({ name, email, password, venueManager });

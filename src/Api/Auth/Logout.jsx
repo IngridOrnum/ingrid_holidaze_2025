@@ -1,17 +1,15 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import {useAuthStore} from "../../Store/authStore.jsx";
 
 export function Logout() {
     const navigate = useNavigate();
+    const logout = useAuthStore((state) => state.logout);
 
     useEffect(() => {
-
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("user");
-
+        logout();
         navigate("/");
-        window.location.reload();
-    }, [navigate]);
+    }, [logout, navigate]);
 
     return null;
 }

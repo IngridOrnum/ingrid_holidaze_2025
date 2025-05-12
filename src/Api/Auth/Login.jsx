@@ -1,13 +1,11 @@
-import { API_KEY, API_AUTH_LOGIN } from "../constants.jsx";
+import { API_AUTH_LOGIN } from "../constants.jsx";
+import {getHeaders} from "../Headers.jsx";
 
 export async function Login({ email, password }) {
     try {
         const response = await fetch(API_AUTH_LOGIN, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Noroff-API-Key': API_KEY
-            },
+            headers: getHeaders(),
             body: JSON.stringify({
                 email: email,
                 password: password

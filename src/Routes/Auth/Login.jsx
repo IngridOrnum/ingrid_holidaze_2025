@@ -1,12 +1,17 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import {Login} from "../../Api/Auth/Login.jsx";
 import {useNavigate} from "react-router-dom";
+import {useAuthStore} from "../../Store/authStore.jsx";
 
 
 export function OnLogin() {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        document.title = 'Holidaze - Login'
+    }, []);
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -19,12 +24,11 @@ export function OnLogin() {
             const response = await Login({ email, password });
             console.log("Login success:", response);
 
-            localStorage.setItem("accessToken", response.data.accessToken);
-            localStorage.setItem("user", JSON.stringify(response.data));
+            const { setAccessToken, setUser } = useAuthStore.getState();
+            setAccessToken(response.accessToken);
+            setUser(response);
 
             navigate("/");
-            window.location.reload();
-
             setSuccess("Login successful!");
             setError(null);
         } catch (error) {
