@@ -32,6 +32,12 @@ export function SingleVenue() {
         getSingleVenue();
     }, [id]);
 
+    useEffect(() => {
+        if (singleVenue?.name) {
+            document.title = 'Holidaze - ' + singleVenue.name
+        }
+    }, [singleVenue]);
+
     return (
         <div className={"flex flex-col items-center justify-center"}>
             {singleVenue ? (

@@ -1,7 +1,7 @@
 import {Link} from "react-router-dom";
 import {Hero} from "./Components/Hero/hero.jsx";
 import {useNavigate} from "react-router-dom";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 function App() {
 
@@ -15,6 +15,10 @@ function App() {
             navigate("/search-results")
         }
     }
+
+    useEffect(() => {
+        document.title = 'Holidaze - Home'
+    }, []);
 
   return (
     <div className={"flex flex-col justify-center items-center"}>

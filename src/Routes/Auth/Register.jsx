@@ -1,9 +1,11 @@
 import {Register} from "../../Api/Auth/Register.jsx";
-import { useState } from "react";
+import {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 export function OnRegister() {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
+    const navigate = useNavigate();
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -20,9 +22,17 @@ export function OnRegister() {
             return;
         }
 
+        useEffect(() => {
+            document.title = 'Holidaze - Register'
+        }, []);
+
         try {
             const response = await Register({ name, email, password, venueManager });
             console.log("Registration success:", response);
+
+            navigate("/login");
+            window.location.reload();
+
             setSuccess("Registration successful!");
             setError(null);
         } catch (error) {

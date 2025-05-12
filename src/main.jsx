@@ -6,13 +6,13 @@ import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import {SingleVenue} from "./Routes/SingleVenue.jsx";
 import {ConfirmBooking} from "./Routes/Customer/ConfirmBooking.jsx";
 import {BookingComplete} from "./Routes/Customer/BookingComplete.jsx";
-import {CustomerProfile} from "./Routes/Customer/CustomerProfile.jsx";
-import {VenueManagerProfile} from "./Routes/VenueManager/VenueManagerProfile.jsx";
+import {Profile} from "./Routes/Profile.jsx";
 import {Layout} from "./Components/Layout/index.jsx";
 import {SearchResults} from "./Routes/SearchResults.jsx";
 import {OnRegister} from "./Routes/Auth/Register.jsx";
 import {OnLogin} from "./Routes/Auth/Login.jsx";
 import {Logout} from "./Api/Auth/Logout.jsx";
+import {Bookings} from "./Routes/Customer/Bookings.jsx";
 
 const router = createBrowserRouter([
     {
@@ -40,6 +40,10 @@ const router = createBrowserRouter([
                 element: <SingleVenue/>
             },
             {
+                path: "/bookings",
+                element: <Bookings/>
+            },
+            {
                 path: "/confirm-booking",
                 element: <ConfirmBooking/>
             },
@@ -48,12 +52,8 @@ const router = createBrowserRouter([
                 element: <BookingComplete/>
             },
             {
-                path: "/customer-profile",
-                element: <CustomerProfile/>
-            },
-            {
-                path: "/venue-manager-profile",
-                element: <VenueManagerProfile/>
+                path: "/profile",
+                element: <Profile/>
             },
             {
                 path: "/search-results",

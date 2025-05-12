@@ -1,17 +1,15 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import {useAuthStore} from "../../Store/authStore.jsx";
 
 export function Logout() {
     const navigate = useNavigate();
+    const logout = useAuthStore((state) => state.logout);
 
     useEffect(() => {
-        // Clear stored user data
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("user");
+        logout();
+        navigate("/");
+    }, [logout, navigate]);
 
-        // Optionally delay to show a logout message, or just redirect
-        navigate("/login"); // or "/"
-    }, [navigate]);
-
-    return null; // or return a loading message if you want
+    return null;
 }

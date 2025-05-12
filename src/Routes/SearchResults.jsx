@@ -41,6 +41,10 @@ export function SearchResults() {
     const uniqueIds = new Set(sortedVenues.map((v) => v.id));
     console.log("Unique venue ids:", uniqueIds.size);
 
+    useEffect(() => {
+        document.title = 'Holidaze - Search Results'
+    }, []);
+
     async function getVenues() {
         try {
             const sortKey = sortOption === "latest" ? "created" : "price";
