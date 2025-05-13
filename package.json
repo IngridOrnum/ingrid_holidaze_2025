@@ -12,6 +12,7 @@
   "dependencies": {
     "@demark-pro/react-booking-calendar": "^4.0.3",
     "@tailwindcss/vite": "^4.1.3",
+    "lucide-react": "^0.510.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-range": "^1.10.0",
