@@ -13,4 +13,13 @@
     --color-text: #420C1B;
     --color-text-gray: #757575;
     --color-custom-brown: #744B43;
+    --color-custom-light-gray: #EDEDED;
+}
+
+.booked-day {
+    background-color: #f87171;
+    color: white;
+}
+.day-available {
+    background-color: #86efac;
 }

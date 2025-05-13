@@ -18,7 +18,6 @@ export function Header() {
         }
     }, [menuOpen]);
 
-
     return (
         <header
             className={"flex relative z-40 justify-between p-4 bg-secondary-beige px-[40px] py-[10px] lg:px-[80px] lg:py-[14px] items-center"}>

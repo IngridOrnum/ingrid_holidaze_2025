@@ -2,7 +2,7 @@ import {Link} from "react-router-dom";
 
 export function Footer() {
     return (
-        <footer className={"bg-blue-200 p-4 items-center justify-center flex"}>
+        <footer className={"bg-blue-200 p-4 items-center justify-center flex h-80"}>
             <Link to={"/"}>
                 <div>
                     Holidaze
