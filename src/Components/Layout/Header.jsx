@@ -7,6 +7,8 @@ export function Header() {
     const accessToken = useAuthStore((state) => state.accessToken);
     const isLoggedIn = !!accessToken;
     const user = useAuthStore((state) => state.user);
+    const avatarUrl = user?.avatar?.url || "/assets/default-avatar.png";
+    const avatarAlt = user?.avatar?.alt || "User avatar";
 
     useEffect(() => {
         if (menuOpen) {
@@ -67,7 +69,7 @@ export function Header() {
                             <div className={"hidden lg:block bg-white w-[2px] h-8"}></div>
                             <div className={" px-2 py-1 flex items-center gap-4"}>
                                 <Link to={"/profile"}>
-                                    <img className={"w-8 h-8 rounded-full"} src={user.avatar.url} alt={user.avatar.alt}/>
+                                    <img className="w-8 h-8 rounded-full" src={avatarUrl} alt={avatarAlt} />
                                 </Link>
                                 <button
                                     onClick={() => setMenuOpen(!menuOpen)}
@@ -97,8 +99,8 @@ export function Header() {
                                     className={"dropdown-menu lg:border-x-4 border-secondary-beige absolute top-full right-0 z-20 bg-custom-white w-full h-screen lg:w-[380px]"}>
                                     <div className={"flex flex-col items-center font-text p-10 gap-6"}>
                                         <div className={"flex items-center gap-2"}>
-                                            <img className={"rounded-full w-14 h-14"} src={user.avatar.url}
-                                                 alt={user.avatar.alt}/>
+                                            <img className={"rounded-full w-14 h-14"} src={avatarUrl}
+                                                 alt={avatarAlt}/>
                                             <div className={""}>
                                                 <p className={"font-bold text-md text-custom-gray"}>{user.name}</p>
                                                 <p className={"font-light text-sm text-custom-gray"}>{user.email}</p>
