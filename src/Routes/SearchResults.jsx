@@ -20,7 +20,7 @@ export function SearchResults() {
     const [adults, setAdults] = useState(1);
     const [children, setChildren] = useState(0);
     const totalGuests = adults + children;
-    const [selectedDates, setSelectedDates] = useState([]);
+    const [selectedDates, setSelectedDates] = useState();
 
     const [page, setPage] = useState(1);
     const [moreToLoad, setMoreToLoad] = useState(true);
@@ -31,7 +31,7 @@ export function SearchResults() {
         priceRange,
         facilities,
         totalGuests,
-        selectedDates
+        selectedDates,
     });
 
     const [sortOption, setSortOption] = useState("latest");

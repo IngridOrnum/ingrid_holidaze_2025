@@ -3,7 +3,6 @@ import {Login} from "../../Api/Auth/Login.jsx";
 import {useNavigate} from "react-router-dom";
 import {useAuthStore} from "../../Store/authStore.jsx";
 
-
 export function OnLogin() {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
@@ -22,15 +21,17 @@ export function OnLogin() {
 
         try {
             const response = await Login({ email, password });
-            console.log("Login success:", response);
+
+            const { accessToken, ...userData } = response;
 
             const { setAccessToken, setUser } = useAuthStore.getState();
-            setAccessToken(response.accessToken);
-            setUser(response);
+            setAccessToken(accessToken);
+            setUser(userData);
 
-            navigate("/");
             setSuccess("Login successful!");
             setError(null);
+
+            navigate("/");
         } catch (error) {
             console.error("Login failed:", error);
             setError(error.message);

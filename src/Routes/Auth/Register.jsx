@@ -7,6 +7,10 @@ export function OnRegister() {
     const [success, setSuccess] = useState(null);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        document.title = 'Holidaze - Register'
+    }, []);
+
     async function handleSubmit(event) {
         event.preventDefault();
 
@@ -21,10 +25,6 @@ export function OnRegister() {
             setError("Passwords do not match");
             return;
         }
-
-        useEffect(() => {
-            document.title = 'Holidaze - Register'
-        }, []);
 
         try {
             const response = await Register({ name, email, password, venueManager });
