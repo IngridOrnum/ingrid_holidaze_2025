@@ -5,9 +5,9 @@ import {Outlet} from "react-router-dom";
 export function Layout() {
     return (
         <>
-            <div className={"min-h-screen flex flex-col bg-[#FFFCF7]"}>
+            <div className={"min-h-screen flex flex-col bg-bg-color"}>
                 <Header/>
-                <main className={"grow mx-[20px] lg:mx-[80px]"}>
+                <main>
                     <Outlet/>
                 </main>
                 <Footer/>

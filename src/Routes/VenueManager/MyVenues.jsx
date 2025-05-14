@@ -1,14 +1,14 @@
 import {useEffect} from "react";
 import {AsideMenu} from "../../Components/Layout/AsideMenu.jsx";
 
-export function Bookings() {
+export function MyVenues() {
     useEffect(() => {
-        document.title = 'Holidaze - My Bookings'
+        document.title = 'Holidaze - My Venues'
     }, []);
     return (
         <div className={"flex min-h-screen"}>
             <AsideMenu profile={profile}/>
-            <h1>My Bookings</h1>
+            <h1>My Venues</h1>
         </div>
     )
 }

@@ -25,7 +25,7 @@ function App() {
         <div className={"flex flex-col justify-center items-center"}>
             <div className={"w-full items-center flex flex-col relative"}>
                 <Hero/>
-                <div className={"absolute bottom-6 w-full"}>
+                <div className={"absolute bottom-6 w-full mx-[20px] lg:mx-[80px]"}>
                     <div
                         className={"border border-primary-orange rounded-full flex items-center p-2 mx-6 justify-between bg-custom-white"}>
                         <input type="text"
