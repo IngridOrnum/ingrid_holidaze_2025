@@ -102,8 +102,13 @@ export function Header({profile}) {
                                             <img className={"rounded-full w-14 h-14"} src={avatarUrl}
                                                  alt={avatarAlt}/>
                                             <div className={""}>
-                                                <p className={"font-bold text-md text-custom-gray"}>{user.name}</p>
-                                                <p className={"font-light text-sm text-custom-gray"}>{user.email}</p>
+                                                {user && (
+                                                    <>
+                                                        <p className={"font-bold text-md text-custom-gray"}>{user.name}</p>
+                                                        <p className={"font-light text-sm text-custom-gray"}>{user.email}</p>
+                                                    </>
+                                                )}
+
                                             </div>
                                         </div>
                                         <div className={"w-70 bg-[#EAEAEA] h-[1px]"}></div>
