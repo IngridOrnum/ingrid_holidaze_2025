@@ -34,8 +34,6 @@ export function filterVenues({ venues, priceRange, facilities, totalGuests, sele
                 return false;
             }
         }
-
-
         return true;
     });
 }

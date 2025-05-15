@@ -1,8 +1,10 @@
 import {Link} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {useAuthStore} from "../../Store/authStore.jsx";
+import {isVenueManager} from "../../Utils/userRole.jsx";
+import {House} from "lucide-react";
 
-export function Header() {
+export function Header({profile}) {
     const [menuOpen, setMenuOpen] = useState(false);
     const accessToken = useAuthStore((state) => state.accessToken);
     const isLoggedIn = !!accessToken;
@@ -17,7 +19,6 @@ export function Header() {
             document.body.classList.remove('overflow-hidden');
         }
     }, [menuOpen]);
-
     return (
         <header
             className={"flex relative z-40 justify-between p-4 bg-secondary-beige px-[40px] py-[10px] lg:px-[80px] lg:py-[14px] items-center"}>
@@ -132,11 +133,13 @@ export function Header() {
                                                     My Bookings
                                                 </li>
                                             </Link>
-                                            <Link to={"/my-venues"} onClick={() => setMenuOpen(false)}>
-                                                <li className={"border border-secondary-beige px-4 py-2 rounded w-[130px] flex justify-center hover:bg-secondary-beige text-custom-brown"}>
-                                                    My Venues
-                                                </li>
-                                            </Link>
+                                            {isVenueManager(profile) && (
+                                                <Link to="/my-venues" onClick={() => setMenuOpen(false)}>
+                                                    <li className={`...`}>
+                                                        My Venues
+                                                    </li>
+                                                </Link>
+                                            )}
                                         </ul>
                                         <Link to="/logout" onClick={() => setMenuOpen(false)}>
                                             <button
