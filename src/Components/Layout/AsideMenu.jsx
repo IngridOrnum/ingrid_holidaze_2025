@@ -19,6 +19,11 @@ export function AsideMenu({profile}) {
         return () => clearTimeout(timeout);
     }, [menuOpen]);
 
+    useEffect(() => {
+        console.log("profile in AsideMenu:", profile);
+    }, [profile]);
+
+
     return (
         <aside className={` hidden lg:flex flex-col bg-custom-white p-4 border border-black h-screen ${menuOpen ? 'w-48' : 'w-20'} transition-all duration-300`}>
             <ul className={"flex gap-4 flex-col items-center"}>

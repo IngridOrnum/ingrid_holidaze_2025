@@ -32,15 +32,6 @@ export function Bookings() {
         fetchBookings();
     }, [profile?.name]);
 
-
-    if (loading) {
-        return <div>Loading bookings...</div>;
-    }
-
-    if (error) {
-        return <div>Error loading bookings: {error}</div>;
-    }
-
     async function handleCancel(bookingId) {
         toast((t) => (
             <div className="flex flex-col items-center gap-4 p-4">
@@ -48,7 +39,7 @@ export function Bookings() {
                 <div className="flex gap-4">
                     <button
                         onClick={async () => {
-                            toast.dismiss(t.id); // Lukk toasten
+                            toast.dismiss(t.id);
                             try {
                                 await deleteBooking(bookingId);
                                 setBookings((prevBookings) => prevBookings.filter((booking) => booking.id !== bookingId));
@@ -74,14 +65,16 @@ export function Bookings() {
         ), { duration: 10000 });
     }
 
-
-
     return (
         <div className={"flex min-h-screen"}>
             <AsideMenu profile={profile}/>
             <div className="p-4">
                 <h1 className="text-xl font-bold mb-4">My Bookings</h1>
-                {bookings.length === 0 ? (
+                {loading ? (
+                    <div>Loading bookings...</div>
+                ) : error ? (
+                    <div>Error loading bookings: {error}</div>
+                ) : bookings.length === 0 ? (
                     <div className="flex flex-col items-center justify-center mt-20">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-24 w-24 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16h8M8 12h8m-7-8h6a2 2 0 012 2v16a2 2 0 01-2 2H9a2 2 0 01-2-2V6a2 2 0 012-2z" />
@@ -108,7 +101,6 @@ export function Bookings() {
                         ))}
                     </ul>
                 )}
-
             </div>
         </div>
     )

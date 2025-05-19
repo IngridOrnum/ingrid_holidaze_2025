@@ -2,15 +2,31 @@ import {Link} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {useAuthStore} from "../../Store/authStore.jsx";
 import {isVenueManager} from "../../Utils/userRole.jsx";
-import {House} from "lucide-react";
+import {readProfile} from "../../Store/userStore.jsx";
 
-export function Header({profile}) {
+export function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [profile, setProfile] = useState(null);
     const accessToken = useAuthStore((state) => state.accessToken);
     const isLoggedIn = !!accessToken;
     const user = useAuthStore((state) => state.user);
     const avatarUrl = user?.avatar?.url || "/assets/default-avatar.png";
     const avatarAlt = user?.avatar?.alt || "User avatar";
+
+    useEffect(() => {
+        async function fetchProfile() {
+            if (!user?.name) return;
+            try {
+                const response = await readProfile(user.name);
+                setProfile(response.data);
+            } catch (error) {
+                console.error("Error fetching profile in Header:", error);
+            }
+        }
+
+        fetchProfile();
+    }, [user]);
+
 
     useEffect(() => {
         if (menuOpen) {
@@ -108,7 +124,6 @@ export function Header({profile}) {
                                                         <p className={"font-light text-sm text-custom-gray"}>{user.email}</p>
                                                     </>
                                                 )}
-
                                             </div>
                                         </div>
                                         <div className={"w-70 bg-[#EAEAEA] h-[1px]"}></div>

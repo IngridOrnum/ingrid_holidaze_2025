@@ -49,9 +49,6 @@ export function Profile() {
         return <div className="text-center p-8">You must be logged in to view this page.</div>;
     }
 
-    if (!profile) {
-        return <div className="text-center p-8">Loading profile...</div>;
-    }
 
     function handleChange(e) {
         const { name, value } = e.target;
@@ -104,6 +101,9 @@ export function Profile() {
         <div className={"flex min-h-screen"}>
             <AsideMenu profile={profile}/>
             <div className="flex-1 flex flex-col items-center p-4">
+                {!profile ? (
+                    <div className="text-center p-8">Loading profile...</div>
+                ) : (
                 <div className="bg-white rounded-2xl shadow-md p-6 w-full max-w-md text-center">
                     <div className="relative w-20 h-20 mx-auto">
                         <img
@@ -117,8 +117,6 @@ export function Profile() {
     </span>
                         )}
                     </div>
-
-
                     <h2 className="text-lg font-semibold">{profile.name}</h2>
                     <p className="text-orange-500 text-sm mb-2 flex items-center justify-center gap-2">
                         {isVenueManager(profile) ? (
@@ -204,6 +202,7 @@ export function Profile() {
                     </div>
                         )}
                 </div>
+                )}
             </div>
         </div>
 

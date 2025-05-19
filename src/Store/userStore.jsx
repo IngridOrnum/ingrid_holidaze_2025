@@ -3,9 +3,9 @@ import { getHeaders } from "../Api/Headers.jsx";
 
 export async function readProfile(username) {
     try {
-        const response = await fetch(`${API_PROFILES}/${username}`, {
+        const response = await fetch(`${API_PROFILES}/${username}?_venues=true&_bookings=true`, {
             method: 'GET',
-            headers: getHeaders()
+            headers: getHeaders(),
         });
 
         if (!response.ok) {
