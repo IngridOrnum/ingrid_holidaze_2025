@@ -1,22 +1,22 @@
-import {API_PROFILES, API_VENUES} from "../Constants.jsx";
+import {API_VENUES} from "../Constants.jsx";
 import { getHeaders } from "../Headers.jsx";
 
-export async function putVenue() {
+export async function putVenue(venueId, data) {
     try {
-        const response = await fetch(API_VENUES, {
+        const response = await fetch(`${API_VENUES}/${venueId}`, {
             method: 'PUT',
             headers: {
                 ...getHeaders(),
                 'Content-Type': 'application/json',
             },
+            body: JSON.stringify(data),
         });
 
         if (!response.ok) {
-            throw new Error('Failed to update profile');
+            throw new Error('Failed to update venue');
         }
 
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
         throw error;
     }

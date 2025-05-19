@@ -50,7 +50,33 @@ export function CreateVenueForm({ onSuccess }) {
         }
     }
 
+    function handleAddImage(url, alt) {
+        if (!url) return;
+
+        setFormData((prev) => ({
+            ...prev,
+            media: [...prev.media, { url, alt }],
+        }));
+
+        setNewImageUrl('');
+        setNewImageCaption('');
+    }
+
+
+
     function handleNext() {
+        if (step === 2) {
+            if (newImageUrl) {
+                alert("You must click '+ Add Image' to include the image.");
+                return;
+            }
+
+            if (formData.media.length === 0) {
+                alert("Please add at least one image before continuing.");
+                return;
+            }
+        }
+
         if (step < 3) {
             setStep((prevStep) => prevStep + 1);
         }
@@ -62,12 +88,26 @@ export function CreateVenueForm({ onSuccess }) {
         }
     }
 
-
     async function handleSubmit(e) {
         e.preventDefault();
 
+        if (step < 3) {
+            return;
+        }
+
+        const cleanedLocation = Object.fromEntries(
+            Object.entries(formData.location).filter(([_, value]) => value !== '')
+        );
+
+        const dataToSend = {
+            ...formData,
+            location: cleanedLocation,
+        };
+
+        console.log("Sending update:", JSON.stringify(dataToSend, null, 2));
+
         try {
-            await postVenue(formData);
+            await postVenue(formData.id, dataToSend);
             alert("Venue successfully created!");
             if (onSuccess) {
                 onSuccess();
@@ -78,10 +118,13 @@ export function CreateVenueForm({ onSuccess }) {
     }
 
 
-        return (
+    return (
         <>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full max-w-lg">
-                <div className="flex justify-center items-center gap-6">
+            <form className="..." onKeyDown={(e) => {
+                if (e.key === 'Enter') e.preventDefault();
+            }}>
+
+            <div className="flex justify-center items-center gap-6">
                     <div className={`flex flex-col items-center ${step >= 1 ? 'text-orange-500' : 'text-gray-400'}`}>
                         <span>🔴</span>
                         <p>Venue Details</p>
@@ -99,7 +142,7 @@ export function CreateVenueForm({ onSuccess }) {
                 </div>
 
                 {step === 1 && (
-                    <>
+                    <div className={"flex flex-col"}>
                         <input
                             type="text"
                             name="name"
@@ -118,14 +161,19 @@ export function CreateVenueForm({ onSuccess }) {
                         />
 
                         <div className="flex gap-4">
-                            <input
-                                type="number"
-                                name="price"
-                                placeholder="Price / night"
-                                value={formData.price}
-                                onChange={handleChange}
-                                className="border rounded p-2 w-1/2"
-                            />
+                            <div className={"flex flex-col"}>
+                                <span>Price:</span>
+                                <input
+                                    type="number"
+                                    name="price"
+                                    placeholder="Price / night"
+                                    value={formData.price}
+                                    onChange={handleChange}
+                                    className="border rounded p-2 w-1/2"
+                                />
+                            </div>
+                            <div className={"flex flex-col"}>
+                                <span>Guests:</span>
                             <input
                                 type="number"
                                 name="maxGuests"
@@ -134,6 +182,7 @@ export function CreateVenueForm({ onSuccess }) {
                                 onChange={handleChange}
                                 className="border rounded p-2 w-1/2"
                             />
+                            </div>
                         </div>
 
                         <fieldset className="flex flex-wrap gap-4">
@@ -143,7 +192,7 @@ export function CreateVenueForm({ onSuccess }) {
                             <label><input type="checkbox" name="pets" checked={formData.meta.pets} onChange={handleChange} /> Pets Allowed</label>
                         </fieldset>
 
-                    </>
+                    </div>
                     )}
 
                 {step === 2 && (
@@ -167,6 +216,11 @@ export function CreateVenueForm({ onSuccess }) {
                         <button type="button" onClick={() => handleAddImage(newImageUrl, newImageCaption)}>
                             + Add Image
                         </button>
+                        <ul className="text-sm text-gray-600 space-y-1">
+                            {formData.media.map((image, index) => (
+                                <li key={index}>✅ {image.url} {image.alt && `– ${image.alt}`}</li>
+                            ))}
+                        </ul>
 
                     </>
                 )}
@@ -244,11 +298,13 @@ export function CreateVenueForm({ onSuccess }) {
                         </button>
                     ) : (
                         <button
-                            type="submit"
+                            type="button"
+                            onClick={handleSubmit}
                             className="bg-orange-500 text-white px-6 py-2 rounded hover:bg-orange-600 transition ml-auto"
                         >
                             Publish New Venue
                         </button>
+
                     )}
                 </div>
 
