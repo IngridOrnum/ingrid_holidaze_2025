@@ -1,10 +1,9 @@
-import { API_PROFILES } from "../Api/Constants.jsx";
-import { getHeaders } from "../Api/Headers.jsx";
+import { API_PROFILES } from "../Constants.jsx";
+import {getHeaders} from "../Headers.jsx";
 
-export async function readProfile(username) {
+export async function getBookingsByUser(username) {
     try {
-        const response = await fetch(`${API_PROFILES}/${username}?_venues=true&_bookings=true`, {
-            method: 'GET',
+        const response = await fetch(`${API_PROFILES}/${username}?_bookings=true&_venues=true`, {
             headers: getHeaders(),
         });
 
@@ -13,7 +12,7 @@ export async function readProfile(username) {
             throw new Error(`Error fetching profile data: ${response.status}`);
         }
 
-        const data = await response.json();
+        const { data } = await response.json();
         return data;
     } catch (error) {
         throw error;

@@ -8,7 +8,7 @@ export function BookingComplete() {
 
     useEffect(() => {
         if (!booking) {
-            navigate("/");
+            navigate("/bookings");
         }
     }, [booking, navigate]);
 

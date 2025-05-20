@@ -13,6 +13,7 @@ import {OnRegister} from "./Routes/Auth/Register.jsx";
 import {OnLogin} from "./Routes/Auth/Login.jsx";
 import {Logout} from "./Api/Auth/Logout.jsx";
 import {Bookings} from "./Routes/Customer/Bookings.jsx";
+import {MyVenues} from "./Routes/VenueManager/MyVenues.jsx";
 
 const router = createBrowserRouter([
     {
@@ -59,6 +60,10 @@ const router = createBrowserRouter([
                 path: "/search-results",
                 element: <SearchResults/>
             },
+            {
+                path: "/my-venues",
+                element: <MyVenues/>
+            }
         ]
     }
 ])

@@ -1,14 +1,16 @@
 import {Footer} from "./Footer.jsx";
 import {Header} from "./Header.jsx";
 import {Outlet} from "react-router-dom";
+import { Toaster } from 'react-hot-toast';
 
 export function Layout() {
     return (
         <>
-            <div className={"min-h-screen flex flex-col bg-[#FFFCF7]"}>
+            <div className={"min-h-screen flex flex-col bg-bg-color"}>
                 <Header/>
-                <main className={"grow mx-[20px] lg:mx-[80px]"}>
+                <main>
                     <Outlet/>
+                    <Toaster position="top-center" reverseOrder={false} />
                 </main>
                 <Footer/>
             </div>

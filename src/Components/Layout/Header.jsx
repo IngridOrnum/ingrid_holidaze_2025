@@ -1,14 +1,32 @@
 import {Link} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {useAuthStore} from "../../Store/authStore.jsx";
+import {isVenueManager} from "../../Utils/userRole.jsx";
+import {readProfile} from "../../Store/userStore.jsx";
 
 export function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [profile, setProfile] = useState(null);
     const accessToken = useAuthStore((state) => state.accessToken);
     const isLoggedIn = !!accessToken;
     const user = useAuthStore((state) => state.user);
     const avatarUrl = user?.avatar?.url || "/assets/default-avatar.png";
     const avatarAlt = user?.avatar?.alt || "User avatar";
+
+    useEffect(() => {
+        async function fetchProfile() {
+            if (!user?.name) return;
+            try {
+                const response = await readProfile(user.name);
+                setProfile(response.data);
+            } catch (error) {
+                console.error("Error fetching profile in Header:", error);
+            }
+        }
+
+        fetchProfile();
+    }, [user]);
+
 
     useEffect(() => {
         if (menuOpen) {
@@ -17,7 +35,6 @@ export function Header() {
             document.body.classList.remove('overflow-hidden');
         }
     }, [menuOpen]);
-
     return (
         <header
             className={"flex relative z-40 justify-between p-4 bg-secondary-beige px-[40px] py-[10px] lg:px-[80px] lg:py-[14px] items-center"}>
@@ -101,25 +118,33 @@ export function Header() {
                                             <img className={"rounded-full w-14 h-14"} src={avatarUrl}
                                                  alt={avatarAlt}/>
                                             <div className={""}>
-                                                <p className={"font-bold text-md text-custom-gray"}>{user.name}</p>
-                                                <p className={"font-light text-sm text-custom-gray"}>{user.email}</p>
+                                                {user && (
+                                                    <>
+                                                        <p className={"font-bold text-md text-custom-gray"}>{user.name}</p>
+                                                        <p className={"font-light text-sm text-custom-gray"}>{user.email}</p>
+                                                    </>
+                                                )}
                                             </div>
                                         </div>
                                         <div className={"w-70 bg-[#EAEAEA] h-[1px]"}></div>
                                         <ul className={"flex flex-col gap-4 items-center lg:hidden"}>
                                             <Link to={"/"} onClick={() => setMenuOpen(false)}>
-                                                <li className={"border border-secondary-beige px-4 py-2 rounded w-[130px] flex justify-center hover:bg-secondary-beige text-custom-brown"}>Home</li>
+                                                <li className={"border border-secondary-beige px-4 py-2 rounded w-[130px] flex justify-center hover:bg-secondary-beige text-custom-brown"}>
+                                                    Home</li>
                                             </Link>
                                             <Link to={"/search-results"} onClick={() => setMenuOpen(false)}>
-                                                <li className={"border border-secondary-beige px-4 py-2 rounded w-[130px] flex justify-center hover:bg-secondary-beige text-custom-brown"}>Search</li>
+                                                <li className={"border border-secondary-beige px-4 py-2 rounded w-[130px] flex justify-center hover:bg-secondary-beige text-custom-brown"}>
+                                                    Search</li>
                                             </Link>
                                             <Link to={"/"} onClick={() => setMenuOpen(false)}>
-                                                <li className={"border border-secondary-beige px-4 py-2 rounded w-[130px] flex justify-center hover:bg-secondary-beige text-custom-brown"}>About</li>
+                                                <li className={"border border-secondary-beige px-4 py-2 rounded w-[130px] flex justify-center hover:bg-secondary-beige text-custom-brown"}>
+                                                    About</li>
                                             </Link>
                                         </ul>
                                         <ul className={"flex gap-4 flex-col items-center"}>
                                             <Link to={"/profile"} onClick={() => setMenuOpen(false)}>
-                                                <li className={"border border-secondary-beige px-4 py-2 rounded w-[130px] flex justify-center hover:bg-secondary-beige text-custom-brown"}>My
+                                                <li className={"border border-secondary-beige px-4 py-2 rounded w-[130px] flex justify-center hover:bg-secondary-beige text-custom-brown"}>
+                                                    My
                                                     Profile
                                                 </li>
                                             </Link>
@@ -128,6 +153,13 @@ export function Header() {
                                                     My Bookings
                                                 </li>
                                             </Link>
+                                            {isVenueManager(profile) && (
+                                                <Link to="/my-venues" onClick={() => setMenuOpen(false)}>
+                                                    <li className={`...`}>
+                                                        My Venues
+                                                    </li>
+                                                </Link>
+                                            )}
                                         </ul>
                                         <Link to="/logout" onClick={() => setMenuOpen(false)}>
                                             <button

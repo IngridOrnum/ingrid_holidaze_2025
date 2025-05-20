@@ -117,7 +117,7 @@ export function SingleVenue() {
                     <img className={"object-cover h-[400px] lg:h-[586px]"}
                          src={singleVenue.media[0]?.url || "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg"}
                          alt={singleVenue.media[0]?.alt || singleVenue.name}/>
-                    <div className={"flex justify-between"}>
+                    <div className={"flex justify-between mx-[20px] lg:mx-[80px]"}>
                         <div className={"flex flex-col items-center gap-8 w-full"}>
                             <h1 className={"font-title text-custom-text text-3xl"}>{singleVenue.name}</h1>
                             <Rating rating={singleVenue.rating}/>
