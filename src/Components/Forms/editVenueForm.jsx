@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { putVenue } from "../../Api/Venue/putVenue.jsx";
+import {StarRatingInput} from "../Rating/StarRating.jsx";
+import { useLocation } from "react-router-dom";
 
 export function EditVenueForm({ venueData, onSuccess, onCancel }) {
     const [step, setStep] = useState(1);
@@ -109,12 +111,25 @@ export function EditVenueForm({ venueData, onSuccess, onCancel }) {
                         <input type="number" name="maxGuests" placeholder="Capacity (max guests)" value={formData.maxGuests} onChange={handleChange} className="border rounded p-2 w-1/2" />
                     </div>
 
+                    <div className="flex gap-4">
                     <fieldset className="flex flex-wrap gap-4">
                         <label><input type="checkbox" name="parking" checked={formData.meta.parking} onChange={handleChange} /> Parking</label>
                         <label><input type="checkbox" name="breakfast" checked={formData.meta.breakfast} onChange={handleChange} /> Breakfast</label>
                         <label><input type="checkbox" name="wifi" checked={formData.meta.wifi} onChange={handleChange} /> Wi-Fi</label>
                         <label><input type="checkbox" name="pets" checked={formData.meta.pets} onChange={handleChange} /> Pets Allowed</label>
                     </fieldset>
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+                        <StarRatingInput
+                            value={formData.rating || 0}
+                            onChange={(rating) =>
+                                setFormData((prev) => ({ ...prev, rating }))
+                            }
+                        />
+                    </div>
+
                 </>
             )}
 

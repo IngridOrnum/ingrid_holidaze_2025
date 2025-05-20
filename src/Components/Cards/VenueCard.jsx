@@ -13,7 +13,7 @@ export function VenueCard({ venue }) {
         <Link to={`/single-venue/${venue.id}`}>
             <div className="flex flex-col overflow-hidden rounded w-[240px] cursor-pointer shadow">
                 <div className="relative">
-                    <Rating />
+                    <Rating rating={venue.rating ?? 0}/>
                     <img
                         src={firstImage}
                         alt={imageAlt}

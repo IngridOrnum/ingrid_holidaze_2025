@@ -1,7 +1,10 @@
 import {useState} from "react";
 import {postVenue} from "../../Api/Venue/postVenue.jsx";
+import {StarRatingInput} from "../Rating/StarRating.jsx";
+import {Rating} from "../Rating/Rating.jsx";
 
-export function CreateVenueForm({ onSuccess }) {
+
+export function CreateVenueForm({onSuccess}) {
 
     const [step, setStep] = useState(1);
     const [newImageUrl, setNewImageUrl] = useState('');
@@ -32,21 +35,21 @@ export function CreateVenueForm({ onSuccess }) {
     });
 
     function handleChange(e) {
-        const { name, value, type, checked } = e.target;
+        const {name, value, type, checked} = e.target;
 
         if (name in formData.meta) {
             setFormData((prev) => ({
                 ...prev,
-                meta: { ...prev.meta, [name]: checked },
+                meta: {...prev.meta, [name]: checked},
             }));
         } else if (name.startsWith('location.')) {
             const locationField = name.split('.')[1];
             setFormData((prev) => ({
                 ...prev,
-                location: { ...prev.location, [locationField]: value },
+                location: {...prev.location, [locationField]: value},
             }));
         } else {
-            setFormData((prev) => ({ ...prev, [name]: type === "number" ? Number(value) : value }));
+            setFormData((prev) => ({...prev, [name]: type === "number" ? Number(value) : value}));
         }
     }
 
@@ -55,13 +58,12 @@ export function CreateVenueForm({ onSuccess }) {
 
         setFormData((prev) => ({
             ...prev,
-            media: [...prev.media, { url, alt }],
+            media: [...prev.media, {url, alt}],
         }));
 
         setNewImageUrl('');
         setNewImageCaption('');
     }
-
 
 
     function handleNext() {
@@ -104,10 +106,8 @@ export function CreateVenueForm({ onSuccess }) {
             location: cleanedLocation,
         };
 
-        console.log("Sending update:", JSON.stringify(dataToSend, null, 2));
-
         try {
-            await postVenue(formData.id, dataToSend);
+            await postVenue(dataToSend);
             alert("Venue successfully created!");
             if (onSuccess) {
                 onSuccess();
@@ -124,7 +124,7 @@ export function CreateVenueForm({ onSuccess }) {
                 if (e.key === 'Enter') e.preventDefault();
             }}>
 
-            <div className="flex justify-center items-center gap-6">
+                <div className="flex justify-center items-center gap-6">
                     <div className={`flex flex-col items-center ${step >= 1 ? 'text-orange-500' : 'text-gray-400'}`}>
                         <span>🔴</span>
                         <p>Venue Details</p>
@@ -174,26 +174,46 @@ export function CreateVenueForm({ onSuccess }) {
                             </div>
                             <div className={"flex flex-col"}>
                                 <span>Guests:</span>
-                            <input
-                                type="number"
-                                name="maxGuests"
-                                placeholder="Capacity (max guests)"
-                                value={formData.maxGuests}
-                                onChange={handleChange}
-                                className="border rounded p-2 w-1/2"
-                            />
+                                <input
+                                    type="number"
+                                    name="maxGuests"
+                                    placeholder="Capacity (max guests)"
+                                    value={formData.maxGuests}
+                                    onChange={handleChange}
+                                    className="border rounded p-2 w-1/2"
+                                />
                             </div>
                         </div>
-
-                        <fieldset className="flex flex-wrap gap-4">
-                            <label><input type="checkbox" name="parking" checked={formData.meta.parking} onChange={handleChange} /> Parking</label>
-                            <label><input type="checkbox" name="breakfast" checked={formData.meta.breakfast} onChange={handleChange} /> Breakfast</label>
-                            <label><input type="checkbox" name="wifi" checked={formData.meta.wifi} onChange={handleChange} /> Wi-Fi</label>
-                            <label><input type="checkbox" name="pets" checked={formData.meta.pets} onChange={handleChange} /> Pets Allowed</label>
-                        </fieldset>
-
+                        <div className={"flex flex-col gap-4"}>
+                            <div className="flex flex-col gap-4">
+                                <span>Facilities</span>
+                                <fieldset className="flex flex-wrap gap-4">
+                                    <label><input type="checkbox" name="parking" checked={formData.meta.parking}
+                                                  onChange={handleChange}/> Parking</label>
+                                    <label><input type="checkbox" name="breakfast" checked={formData.meta.breakfast}
+                                                  onChange={handleChange}/> Breakfast</label>
+                                    <label><input type="checkbox" name="wifi" checked={formData.meta.wifi}
+                                                  onChange={handleChange}/> Wi-Fi</label>
+                                    <label><input type="checkbox" name="pets" checked={formData.meta.pets}
+                                                  onChange={handleChange}/> Pets Allowed</label>
+                                </fieldset>
+                            </div>
+                            <div className="flex flex-col gap-2 flex-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                                <div className="flex flex-col gap-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+                                    <StarRatingInput
+                                        value={formData.rating}
+                                        onChange={(rating) =>
+                                            setFormData((prev) => ({ ...prev, rating }))
+                                        }
+                                    />
+                                    <Rating rating={formData.rating} />
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    )}
+                )}
 
                 {step === 2 && (
                     <>

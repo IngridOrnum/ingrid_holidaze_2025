@@ -105,12 +105,18 @@ export function MyVenues({venues = [] }) {
                         )}
 
                         {view === 'create' && (
-                            <CreateVenueForm onSuccess={() => setView('list')} />
+                            <CreateVenueForm onSuccess={async () => {
+                                const response = await readProfile(user.name);
+                                setProfile(response.data);
+                                setView('list')} }
+                            />
                         )}
                         {view === 'edit' && selectedVenue && (
                             <EditVenueForm
                                 venueData={selectedVenue}
-                                onSuccess={() => {
+                                onSuccess={async () => {
+                                    const response = await readProfile(user.name);
+                                    setProfile(response.data);
                                     setView('list');
                                     setSelectedVenue(null);
                                 }}
