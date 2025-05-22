@@ -4,12 +4,21 @@ import {getBookingsByUser} from "../../Api/Booking/getBookingsByUser.jsx";
 import {useAuthStore} from "../../Store/authStore.jsx";
 import {deleteBooking} from "../../Api/Booking/deleteBooking.jsx";
 import { toast } from 'react-hot-toast';
+import { useNavigate } from "react-router-dom";
+
 
 export function Bookings() {
     const profile = useAuthStore((state) => state.user);
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [filter, setFilter] = useState("upcoming");
+    const navigate = useNavigate();
+
+    const now = new Date();
+    const upcomingBookings = bookings.filter(booking => new Date(booking.dateFrom) >= now);
+    const previousBookings = bookings.filter(booking => new Date(booking.dateFrom) < now);
+    const filteredBookings = filter === "upcoming" ? upcomingBookings : previousBookings;
 
     useEffect(() => {
         document.title = 'Holidaze - My Bookings';
@@ -68,8 +77,25 @@ export function Bookings() {
     return (
         <div className={"flex min-h-screen"}>
             <AsideMenu profile={profile}/>
-            <div className="p-4">
+            <div className="flex flex-col w-full items-center p-4 gap-2">
                 <h1 className="text-xl font-bold mb-4">My Bookings</h1>
+                <div className={"flex gap-2"}>
+                    <div className={"flex gap-2"}>
+                        <button
+                            className={`border p-2 ${filter === "previous" ? "bg-gray-300 font-semibold" : ""}`}
+                            onClick={() => setFilter("previous")}
+                        >
+                            Previous
+                        </button>
+                        <button
+                            className={`border p-2 ${filter === "upcoming" ? "bg-gray-300 font-semibold" : ""}`}
+                            onClick={() => setFilter("upcoming")}
+                        >
+                            Upcoming
+                        </button>
+                    </div>
+
+                </div>
                 {loading ? (
                     <div>Loading bookings...</div>
                 ) : error ? (
@@ -86,17 +112,28 @@ export function Bookings() {
                     </div>
                 ) : (
                     <ul className="space-y-4">
-                        {bookings.map((booking) => (
+                        {filteredBookings.map((booking) => (
                             <li key={booking.id} className="border p-4 rounded">
                                 <p><strong>Venue:</strong> {booking.venue.name}</p>
                                 <p><strong>Date from:</strong> {booking.dateFrom}</p>
                                 <p><strong>Date to:</strong> {booking.dateTo}</p>
-                                <button
-                                    onClick={() => handleCancel(booking.id)}
-                                    className="mt-2 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition"
-                                >
-                                    Cancel Booking
-                                </button>
+                                {filter === "upcoming" && (
+                                    <button
+                                        onClick={() => handleCancel(booking.id)}
+                                        className="mt-2 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition"
+                                    >
+                                        Cancel Booking
+                                    </button>
+                                )}
+                                {filter === "previous" && (
+                                    <button
+                                        onClick={() => navigate(`/single-venue/${booking.venue.id}`)}
+                                        className="mt-2 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition"
+                                    >
+                                        Book Again
+                                    </button>
+                                )}
+
                             </li>
                         ))}
                     </ul>

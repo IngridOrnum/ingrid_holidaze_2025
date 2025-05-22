@@ -21,6 +21,7 @@ export function SearchResults() {
     const [children, setChildren] = useState(0);
     const totalGuests = adults + children;
     const [selectedDates, setSelectedDates] = useState();
+    const [sortOption, setSortOption] = useState("latest");
 
     const [page, setPage] = useState(1);
     const [moreToLoad, setMoreToLoad] = useState(true);
@@ -62,7 +63,6 @@ export function SearchResults() {
         selectedDates,
     });
 
-    const [sortOption, setSortOption] = useState("latest");
     const sortedVenues = sortVenues(filteredVenues, sortOption);
 
     console.log("Total sorted venues:", sortedVenues.length);
