@@ -1,4 +1,5 @@
 import { useSearchParams } from "react-router-dom";
+import {getVenues} from "../Api/Venue/getVenues.jsx";
 import {Filters} from "../Components/Filters/index.jsx";
 import {useEffect, useState} from "react";
 import {VenueCard} from "../Components/Cards/VenueCard.jsx";
@@ -8,7 +9,6 @@ import {Guests} from "../Components/Filters/Guests.jsx";
 import {BookingCalendar} from "../Components/Filters/Calendar.jsx";
 import {Facilities} from "../Components/Filters/Facilities.jsx";
 import {Search} from "../Components/Filters/Search.jsx";
-import {API_VENUES} from "../Api/Constants.jsx";
 
 export function SearchResults() {
     const [searchParams] = useSearchParams();
@@ -25,6 +25,34 @@ export function SearchResults() {
     const [page, setPage] = useState(1);
     const [moreToLoad, setMoreToLoad] = useState(true);
     const limit = 20;
+
+    useEffect(() => {
+        (async () => {
+            const data = await getVenues({
+                searchQuery,
+                sortOption,
+                page,
+                limit,
+            });
+
+            if (searchQuery.trim()) {
+                setVenues(data);
+                setMoreToLoad(false);
+            } else {
+                setVenues((prev) => {
+                    const newVenues = data.filter(
+                        (newVenue) => !prev.some((venue) => venue.id === newVenue.id)
+                    );
+                    return [...prev, ...newVenues];
+                });
+
+                if (data.length < limit) {
+                    setMoreToLoad(false);
+                }
+            }
+        })();
+    }, [page, sortOption, searchQuery]);
+
 
     const filteredVenues = filterVenues({
         venues,
@@ -44,59 +72,6 @@ export function SearchResults() {
     useEffect(() => {
         document.title = 'Holidaze - Search Results'
     }, []);
-
-    async function getVenues() {
-        try {
-            const sortKey = sortOption === "latest" ? "created" : "price";
-            const sortOrder = sortOption === "price-low-high" ? "asc" : "desc";
-
-            let url;
-
-            if (searchQuery.trim()) {
-                const params = new URLSearchParams({ q: searchQuery.trim() });
-                url = `${API_VENUES}/search?${params.toString()}`;
-            } else {
-                const params = new URLSearchParams({
-                    _bookings: "true",
-                    sort: sortKey,
-                    sortOrder: sortOrder,
-                    limit: limit.toString(),
-                    page: page.toString(),
-                });
-                url = `${API_VENUES}?${params.toString()}`;
-            }
-
-            const res = await fetch(url);
-            if (!res.ok) {
-                console.error(`HTTP error! status: ${res.status}`);
-                return;
-            }
-
-            const data = await res.json();
-            if (!data.data) {
-                console.error("Data not found in response");
-                return;
-            }
-
-            if (searchQuery.trim()) {
-                setVenues(data.data);
-                setMoreToLoad(false);
-            } else {
-                setVenues((prev) => {
-                    const newVenues = data.data.filter(
-                        (newVenue) => !prev.some((venue) => venue.id === newVenue.id)
-                    );
-                    return [...prev, ...newVenues];
-                });
-
-                if (data.data.length < limit) {
-                    setMoreToLoad(false);
-                }
-            }
-        } catch (error) {
-            console.error("Error fetching venues:", error)
-        }
-    }
 
     useEffect(() => {
         setVenues([]);
