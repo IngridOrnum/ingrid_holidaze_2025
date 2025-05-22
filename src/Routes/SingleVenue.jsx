@@ -6,6 +6,7 @@ import {postBooking} from "../Api/Booking/postBooking.jsx";
 import {Guests} from "../Components/Filters/Guests.jsx";
 import { useBookingStore } from "../Store/bookingStore.jsx";
 import { useNavigate } from "react-router-dom";
+import {PopularVenues} from "../Components/Sections/PopularVenues.jsx";
 
 
 export function SingleVenue() {
@@ -185,6 +186,7 @@ export function SingleVenue() {
 
                         </div>
                     </div>
+                    <PopularVenues/>
                 </div>
             ) : (
                 <p>Loading...</p>

@@ -1,8 +1,10 @@
-import {Link} from "react-router-dom";
 import {Hero} from "./Components/Hero/hero.jsx";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {Search} from 'lucide-react'
+import RecommendedDestinations from "./Components/Sections/RecommendedDestinations.jsx";
+import {ExploreNow} from "./Components/Sections/ExploreNow.jsx";
+import {PopularVenues} from "./Components/Sections/PopularVenues.jsx";
 
 function App() {
 
@@ -36,70 +38,14 @@ function App() {
                         />
                         <button onClick={handleSearchClick}
                                 className={"rounded-full bg-primary-orange border border-primary-orange cursor-pointer p-3 text-custom-white hover:bg-custom-white hover:text-primary-orange"}>
-                            <Search/></button>
+                            <Search/>
+                        </button>
                     </div>
                 </div>
             </div>
-
-                <div className={"flex flex-col items-center"}>
-                    <h2 className={"font-title text-lg"}>Recommended Destinations</h2>
-                    <div className={"flex flex-col"}>
-                        <div className={"flex"}>
-                            <div className={"w-[165px] h-[120px] relative items-center rounded"}>
-                                <img className={"object-cover h-full w-full absolute z-1 rounded"}
-                                     src="/assets/landing-page/amsterdam.jpg" alt="amsterdam"/>
-                                <div className={"absolute z-2 w-full h-full bg-black opacity-20 rounded"}></div>
-                                <div className={"z-10 absolute w-full h-full items-center flex justify-center"}>
-                                    <p className={"font-title text-base"}>
-                                        Amsterdam
-                                    </p>
-                                </div>
-                            </div>
-                            <div className={"w-[165px] h-[120px] relative items-center rounded"}>
-                                <img className={"object-cover h-full w-full absolute z-1 rounded"}
-                                     src="/assets/landing-page/amsterdam.jpg" alt="amsterdam"/>
-                                <div className={"absolute z-2 w-full h-full bg-black opacity-20 rounded"}></div>
-                                <div className={"z-10 absolute w-full h-full items-center flex justify-center"}>
-                                    <p className={"font-title text-base"}>
-                                        Amsterdam
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className={"flex"}>
-                            <div className={"w-[165px] h-[120px] relative items-center rounded"}>
-                                <img className={"object-cover h-full w-full absolute z-1 rounded"}
-                                     src="/assets/landing-page/amsterdam.jpg" alt="amsterdam"/>
-                                <div className={"absolute z-2 w-full h-full bg-black opacity-20 rounded"}></div>
-                                <div className={"z-10 absolute w-full h-full items-center flex justify-center"}>
-                                    <p className={"font-title text-base"}>
-                                        Amsterdam
-                                    </p>
-                                </div>
-                            </div>
-                            <div className={"w-[165px] h-[120px] relative items-center rounded"}>
-                                <img className={"object-cover h-full w-full absolute z-1 rounded"}
-                                     src="/assets/landing-page/amsterdam.jpg" alt="amsterdam"/>
-                                <div className={"absolute z-2 w-full h-full bg-black opacity-20 rounded"}></div>
-                                <div className={"z-10 absolute w-full h-full items-center flex justify-center"}>
-                                    <p className={"font-title text-base"}>
-                                        Amsterdam
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-
-
-            <Link to={"/single-venue/:id"}>
-                <div className={"bg-blue-400 p-6"}>
-                    Single Venue
-                </div>
-            </Link>
+            <RecommendedDestinations/>
+            <ExploreNow/>
+            <PopularVenues/>
         </div>
     )
 }
