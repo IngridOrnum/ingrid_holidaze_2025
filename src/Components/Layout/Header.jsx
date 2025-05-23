@@ -85,7 +85,7 @@ export function Header() {
                             <div className={"hidden lg:block bg-white w-[2px] h-8"}></div>
                             <div className={" px-2 py-1 flex items-center gap-4"}>
                                 <Link to={"/profile"}>
-                                    <img className="w-8 h-8 rounded-full" src={avatarUrl} alt={avatarAlt} />
+                                    <img className="w-8 h-8 rounded-full object-cover" src={avatarUrl} alt={avatarAlt} />
                                 </Link>
                                 <button
                                     onClick={() => setMenuOpen(!menuOpen)}
@@ -115,7 +115,7 @@ export function Header() {
                                     className={"dropdown-menu lg:border-x-4 border-secondary-beige absolute top-full right-0 z-20 bg-custom-white w-full h-screen lg:w-[380px]"}>
                                     <div className={"flex flex-col items-center font-text p-10 gap-6"}>
                                         <div className={"flex items-center gap-2"}>
-                                            <img className={"rounded-full w-14 h-14"} src={avatarUrl}
+                                            <img className={"rounded-full w-14 h-14 object-cover"} src={avatarUrl}
                                                  alt={avatarAlt}/>
                                             <div className={""}>
                                                 {user && (

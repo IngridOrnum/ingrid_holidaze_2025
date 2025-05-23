@@ -16,11 +16,11 @@ export default function RecommendedDestinations() {
         navigate(`/search-results?q=${encodeURIComponent(title)}`);
     }
     return (
-        <section className="px-4 py-8">
-            <h2 className="text-center text-lg font-semibold text-gray-800 mb-4">
+        <section className="flex flex-col px-4 py-8 items-center my-8 md:my-16 md:gap-4">
+            <h2 className="font-title font-medium text-center text-lg text-gray-800 mb-4 md:text-xl xl:text-2xl">
                 Recommended Destinations
             </h2>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <div className="flex flex-wrap justify-center gap-2">
                 {destinations.map((dest) => (
                     <DestinationCard
                         key={dest.title}
