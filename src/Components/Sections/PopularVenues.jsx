@@ -26,9 +26,10 @@ export function PopularVenues() {
     }, []);
 
     return (
-        <section className="flex flex-col items-center gap-10 justify-center">
-            <h2>Popular Venues</h2>
-            <div className={"flex flex-wrap gap-4 justify-center"}>
+        <section className="flex flex-col px-4 py-8 items-center my-8 md:my-16 md:gap-4">
+            <h2 className="font-text uppercase font-bold tracking-wider text-center text-lg text-gray-800 mb-4 md:text-2xl">
+                Popular Venues</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {popularVenues.map((venue) => (
                     <VenueCard key={venue.id} venue={venue} />
                 ))}

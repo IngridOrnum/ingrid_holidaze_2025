@@ -11,9 +11,9 @@ export default function DestinationCard({imageSrc, title, onClick}) {
                 className="object-cover h-full w-full absolute z-0 rounded"
             />
             <div
-                className={"absolute inset-0 z-10 w-full h-full bg-black/30 backdrop-blur-[2px] rounded transition-all duration-300 group-hover:backdrop-blur-none hover:bg-black/20"}>
+                className={"absolute inset-0 z-10 w-full h-full bg-black/30 backdrop-blur-[2px] rounded transition-all duration-300 group-hover:backdrop-blur-none"}>
                 <div className={"absolute z-20 inset-0 w-full h-full items-center flex justify-center"}>
-                    <p className={"font-text font-medium text-custom-white transition-all duration-300 group-hover:text-lg"}>
+                    <p className={"font-text uppercase tracking-widest font-bold text-lg text-custom-white transition-all duration-300 group-hover:text-xl"}>
                         {title}
                     </p>
                 </div>

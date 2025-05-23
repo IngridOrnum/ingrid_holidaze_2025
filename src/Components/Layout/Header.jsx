@@ -62,21 +62,21 @@ export function Header() {
                             <ul className={"hidden lg:flex lg:gap-[50px]"} onClick={() => setMenuOpen(false)}>
                                 <Link to={"/"}>
                                     <li className="relative group">
-                                        <span className="text-inherit after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#420C1B] after:transition-all after:duration-300 group-hover:after:w-full">
+                                        <span className="text-inherit after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[1px] after:w-0 after:bg-[#420C1B] after:transition-all after:duration-300 group-hover:after:w-full">
                                             Home
                                         </span>
                                     </li>
                                 </Link>
                                 <Link to={"/search-results"} onClick={() => setMenuOpen(false)}>
                                     <li  className="relative group">
-                                        <span className="text-inherit after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#420C1B] after:transition-all after:duration-300 group-hover:after:w-full">
+                                        <span className="text-inherit after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[1px] after:w-0 after:bg-[#420C1B] after:transition-all after:duration-300 group-hover:after:w-full">
                                             Search
                                         </span>
                                     </li>
                                 </Link>
                                 <Link to={"/"} onClick={() => setMenuOpen(false)}>
                                     <li className="relative group">
-                                        <span className="text-inherit after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#420C1B] after:transition-all after:duration-300 group-hover:after:w-full">
+                                        <span className="text-inherit after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[1px] after:w-0 after:bg-[#420C1B] after:transition-all after:duration-300 group-hover:after:w-full">
                                             About
                                         </span>
                                     </li>
