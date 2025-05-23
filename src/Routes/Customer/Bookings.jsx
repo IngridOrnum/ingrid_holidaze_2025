@@ -6,7 +6,6 @@ import {deleteBooking} from "../../Api/Booking/deleteBooking.jsx";
 import { toast } from 'react-hot-toast';
 import { useNavigate } from "react-router-dom";
 
-
 export function Bookings() {
     const profile = useAuthStore((state) => state.user);
     const [bookings, setBookings] = useState([]);
@@ -133,7 +132,6 @@ export function Bookings() {
                                         Book Again
                                     </button>
                                 )}
-
                             </li>
                         ))}
                     </ul>
