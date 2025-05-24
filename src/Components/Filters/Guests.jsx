@@ -1,13 +1,14 @@
-import {useState} from "react";
+import {useState, useRef, useEffect} from "react";
 import {PlusIcon, MinusIcon} from "lucide-react";
 
-export function Guests({ adults, setAdults, children, setChildren, maxGuests }) {
+export function Guests({ adults, setAdults, children, setChildren, maxGuests, showLimitMessage = true }) {
     const [showGuestCounter, setShowGuestCounter] = useState(false);
     const maxCount = maxGuests ?? 40;
     const totalCount = adults + children;
     const reachedMaxGuests = totalCount >= maxCount;
     const showPlusSign = maxCount === 40 && totalCount >= maxCount;
     const totalDisplay = `${totalCount}${showPlusSign ? "+" : ""} guests`;
+    const guestRef = useRef(null);
 
     function increment(typeGuest) {
         const totalGuests = adults + children;
@@ -31,14 +32,35 @@ export function Guests({ adults, setAdults, children, setChildren, maxGuests }) 
     }
 
 
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (guestRef.current && !guestRef.current.contains(event.target)) {
+                setShowGuestCounter(false);
+            }
+        }
+
+        if (showGuestCounter) {
+            document.addEventListener("mousedown", handleClickOutside);
+        } else {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [showGuestCounter]);
+
+
     return (
-        <div className={"relative w-full"}>
-            <label className={"block mb-1"}>Guests</label>
-            <button className={"border border-custom-light-gray p-1 w-full text-left flex gap-3 items-center"}
+        <div ref={guestRef} className={"relative w-full font-text gap-1 flex flex-col"}>
+        <label className={"font-medium tracking-wider"}>Guests</label>
+            <button className={"border border-custom-light-gray p-2 w-full text-left flex gap-3 items-center"}
                     onClick={() => setShowGuestCounter((prev) => !prev)}
             >
                 {totalDisplay}
-                {reachedMaxGuests && <span className="ml-2 text-xs text-red-500">(Guest limit)</span>}
+                {reachedMaxGuests && showLimitMessage && (
+                    <span className="ml-2 text-xs text-red-500 cursor-pointer">(Guest limit)</span>
+                )}
             </button>
 
             {showGuestCounter && (

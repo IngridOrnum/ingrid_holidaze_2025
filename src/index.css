@@ -8,6 +8,8 @@
     /*--font-title: 'Fraunces', serif;*/
     /*--font-text: 'Quicksand', sans-serif;*/
 
+    --breakpoint-tablet: 1100px;
+
     --font-title: 'Marcellus', serif;
     --font-text: 'Montserrat', sans-serif;
 
@@ -18,7 +20,8 @@
     --color-text: #420C1B;
     --color-text-gray: #757575;
     --color-custom-brown: #744B43;
-    --color-custom-light-gray: #EDEDED;
+    --color-custom-light-gray: #EAEAEA;
+    --color-custom-medium-gray: #717171;
 }
 
 .booked-day {
@@ -27,4 +30,25 @@
 }
 .day-available {
     background-color: #86efac;
+}
+
+/* Gjør alle dagene små */
+.rdp-day {
+    font-size: 0.75rem !important;
+}
+
+
+.rdp-day_selected,
+.rdp-day_range_start,
+.rdp-day_range_end {
+    width: 1.6rem !important;
+    height: 1.6rem !important;
+    line-height: 1.6rem !important;
+    font-size: 0.75rem !important;
+    border-radius: 9999px !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+    display: inline-flex !important;
+    justify-content: center !important;
+    align-items: center !important;
 }
