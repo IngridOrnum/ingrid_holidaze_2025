@@ -24,31 +24,28 @@
     --color-custom-medium-gray: #717171;
 }
 
-.booked-day {
-    background-color: #f87171;
-    color: white;
-}
-.day-available {
-    background-color: #86efac;
+.booking-calendar {
+    transform: scale(0.85);
+    transform-origin: top center;
 }
 
-/* Gjør alle dagene små */
-.rdp-day {
-    font-size: 0.75rem !important;
+/* 📌 Farger for alle valgte datoer (start, slutt og midt) */
+.booking-calendar .rdp-range_start .rdp-day_button,
+.booking-calendar .rdp-range_end .rdp-day_button,
+.booking-calendar .rdp-range_middle .rdp-day_button {
+    background-color: var(--color-primary-orange) !important;
+    color: var(--color-custom-white) !important;
+    border-radius: 0 !important; /* Hvis du ønsker firkanter */
 }
 
+/* 📌 Hover-effekt (beholdes hvis du ønsker) */
+.booking-calendar .rdp-day:hover:not([disabled]) {
+    background-color: var(--color-primary-orange);
+    color: var(--color-custom-white);
+}
 
-.rdp-day_selected,
-.rdp-day_range_start,
-.rdp-day_range_end {
-    width: 1.6rem !important;
-    height: 1.6rem !important;
-    line-height: 1.6rem !important;
-    font-size: 0.75rem !important;
-    border-radius: 9999px !important;
-    padding: 0 !important;
-    margin: 0 auto !important;
-    display: inline-flex !important;
-    justify-content: center !important;
-    align-items: center !important;
+/* 📌 Booked (beholdes som du hadde) */
+.booking-calendar .booked-day {
+    background-color: #f8717120;
+    color: #f87171;
 }

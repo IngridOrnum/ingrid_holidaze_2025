@@ -1,7 +1,7 @@
 import {useState, useRef, useEffect} from "react";
 import {PlusIcon, MinusIcon} from "lucide-react";
 
-export function Guests({ adults, setAdults, children, setChildren, maxGuests, showLimitMessage = true }) {
+export function Guests({ adults, setAdults, children, setChildren, maxGuests, showLimitMessage = true, classname = "" }) {
     const [showGuestCounter, setShowGuestCounter] = useState(false);
     const maxCount = maxGuests ?? 40;
     const totalCount = adults + children;
@@ -52,9 +52,9 @@ export function Guests({ adults, setAdults, children, setChildren, maxGuests, sh
 
 
     return (
-        <div ref={guestRef} className={"relative w-full font-text gap-1 flex flex-col"}>
+        <div ref={guestRef} className={`relative w-full font-text gap-1 flex flex-col ${classname}`}>
         <label className={"font-medium tracking-wider"}>Guests</label>
-            <button className={"border border-custom-light-gray p-2 w-full text-left flex gap-3 items-center"}
+            <button className={"border border-custom-light-gray p-2 cursor-pointer w-full text-left flex gap-3 items-center"}
                     onClick={() => setShowGuestCounter((prev) => !prev)}
             >
                 {totalDisplay}

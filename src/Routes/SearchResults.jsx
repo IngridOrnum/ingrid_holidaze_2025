@@ -8,6 +8,7 @@ import {SecondaryButton} from "../Components/Buttons/SecondaryButton.jsx";
 import {AsideFilter} from "../Components/Sections/AsideFilter.jsx";
 import {DropdownFilter} from "../Components/Sections/DropdownFilter.jsx";
 import {ArrowDownUp, SlidersHorizontal} from "lucide-react";
+import {SkeletonVenueCard} from "../Components/Cards/SkeletonVenueCard.jsx";
 
 export function SearchResults() {
     const [searchParams] = useSearchParams();
@@ -22,6 +23,7 @@ export function SearchResults() {
     const [sortOption, setSortOption] = useState("latest");
     const [showMobileFilters, setShowMobileFilters] = useState(false);
     const [showSortMenu, setShowSortMenu] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const [allVenues, setAllVenues] = useState([]);
 
@@ -31,6 +33,7 @@ export function SearchResults() {
 
     useEffect(() => {
         (async () => {
+            setLoading(true);
             let all = [];
             let page = 1;
             let more = true;
@@ -49,6 +52,7 @@ export function SearchResults() {
             }
 
             setAllVenues(all);
+            setLoading(false);
         })();
     }, [searchQuery, sortOption]);
 
@@ -176,10 +180,18 @@ export function SearchResults() {
 
                     </div>
                     <div className={"grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6"}>
-                        {paginatedVenues.map((venue) => (
-                            <VenueCard key={venue.id} venue={venue}/>
-                        ))}
+                        {loading
+                            ? Array(8)
+                                .fill(0)
+                                .map((_, i) => <SkeletonVenueCard key={i} />)
+                            : paginatedVenues.length > 0
+                                ? paginatedVenues.map((venue) => (
+                                    <VenueCard key={venue.id} venue={venue} />
+                                ))
+                                : <p className="text-center text-custom-medium-gray text-sm col-span-full">No results found. Try adjusting your filters.</p>}
                     </div>
+
+
                     <div className={"flex flex-col items-center gap-4 my-12"}>
                         {moreToLoad && (
                             <SecondaryButton text={"Load More"} onClick={() => setPage((prev) => prev + 1)}/>

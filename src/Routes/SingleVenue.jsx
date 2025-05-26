@@ -4,23 +4,30 @@ import {Rating} from "../Components/Rating/Rating.jsx";
 import {BookingCalendar} from "../Components/Filters/Calendar.jsx";
 import {postBooking} from "../Api/Booking/postBooking.jsx";
 import {Guests} from "../Components/Filters/Guests.jsx";
-import { useBookingStore } from "../Store/bookingStore.jsx";
-import { useNavigate } from "react-router-dom";
+import {useBookingStore} from "../Store/bookingStore.jsx";
+import {useNavigate} from "react-router-dom";
 import {PopularVenues} from "../Components/Sections/PopularVenues.jsx";
-
+import {PrimaryButton} from "../Components/Buttons/PrimaryButton.jsx";
 
 export function SingleVenue() {
     const [singleVenue, setSingleVenue] = useState(null);
     const [selectedDates, setSelectedDates] = useState();
     const {id} = useParams();
     const url = `https://v2.api.noroff.dev/holidaze/venues/${id}?_bookings=true&_owner=true`;
+    const [errorMessage, setErrorMessage] = useState("");
 
     const [adults, setAdults] = useState(1);
     const [children, setChildren] = useState(0);
-    const totalGuests = adults + children;
 
     const navigate = useNavigate();
-    const { setBooking } = useBookingStore();
+    const {setBooking} = useBookingStore();
+
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    function handleDotClick(index) {
+        setCurrentImageIndex(index);
+    }
+
 
     const facilityIcons = {
         wifi: "/assets/icons/wifi.svg",
@@ -28,6 +35,13 @@ export function SingleVenue() {
         breakfast: "/assets/icons/breakfast.svg",
         parking: "/assets/icons/car.svg",
     };
+
+    const [showMore, setShowMore] = useState(false);
+
+    function toggleShowMore() {
+        setShowMore(!showMore);
+    }
+
 
     useEffect(() => {
         async function getSingleVenue() {
@@ -41,6 +55,7 @@ export function SingleVenue() {
                 console.error("Error fetching venues:", error);
             }
         }
+
         getSingleVenue();
     }, [id]);
 
@@ -54,10 +69,22 @@ export function SingleVenue() {
         return dates;
     }) || [];
 
-
     async function handleBooking() {
+        setErrorMessage("");
+
         if (!selectedDates?.from || !selectedDates?.to) {
-            alert("Please select a start and end date for your booking.");
+            setErrorMessage("Please select both a start and end date.");
+            return;
+        }
+
+        if (hasDateConflict(selectedDates.from, selectedDates.to)) {
+            setErrorMessage("Selected dates overlap with existing bookings.");
+            return;
+        }
+
+        const nights = calculateNights();
+        if (nights <= 0) {
+            setErrorMessage("Please select end date.");
             return;
         }
 
@@ -68,22 +95,21 @@ export function SingleVenue() {
             venueName: singleVenue.name,
             venuePrice: singleVenue.price,
             guests: adults + children,
-            nights: calculateNights(),
+            nights,
         };
-
 
         try {
             const bookingResponse = await postBooking(bookingData);
             console.log("Booking successful:", bookingResponse);
 
             setBooking(bookingData);
-
             navigate("/confirm-booking");
         } catch (error) {
             console.error("Booking failed:", error);
             alert("Booking failed. Please try again.");
         }
     }
+
 
     useEffect(() => {
         if (singleVenue?.name) {
@@ -102,33 +128,133 @@ export function SingleVenue() {
         if (selectedDates?.from && selectedDates?.to) {
             const timeDiff = selectedDates.to - selectedDates.from;
             const nights = timeDiff / (1000 * 60 * 60 * 24);
-            return nights;
+            return nights >= 1 ? nights : 0;
         }
         return 0;
     }
+
 
     const nights = calculateNights();
     const totalPrice = nights * (singleVenue?.price || 0);
 
 
+    function hasDateConflict(from, to) {
+        for (let d = new Date(from); d <= to; d.setDate(d.getDate() + 1)) {
+            if (bookedDates.some(booked => booked.toDateString() === d.toDateString())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     return (
-        <div className={"flex flex-col items-center justify-center w-full max-w-2xl mx-auto relative"}>
+        <div className={"flex flex-col items-center justify-center w-full mx-auto relative lg:justify-between"}>
             {singleVenue ? (
-                <div>
-                    <img className={"object-cover h-[400px] lg:h-[586px]"}
-                         src={singleVenue.media[0]?.url || "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg"}
-                         alt={singleVenue.media[0]?.alt || singleVenue.name}/>
-                    <div className={"flex justify-between mx-[20px] lg:mx-[80px]"}>
-                        <div className={"flex flex-col items-center gap-8 w-full"}>
-                            <h1 className={"font-title text-custom-text text-3xl"}>{singleVenue.name}</h1>
-                            <Rating rating={singleVenue.rating}/>
-                            <p className={"text-custom-text"}>{singleVenue.description}</p>
-                            <div className={"flex flex-col mx-auto items-center border border-secondary-beige bg-custom-white w-full"}>
-                                <h2 className={"font-medium font-title text-xl"}>{singleVenue.price} NOK / night</h2>
+                <div className={"w-full flex flex-col items-center"}>
+                    <div className="relative w-full h-[70vh] lg:h-[586px]">
+                        {singleVenue.media.length > 1 ? (
+                            <>
+                                <img
+                                    className="object-cover w-full h-full"
+                                    src={singleVenue.media[currentImageIndex]?.url}
+                                    alt={singleVenue.media[currentImageIndex]?.alt || singleVenue.name}
+                                />
+                                <button
+                                    onClick={() =>
+                                        setCurrentImageIndex((prev) =>
+                                            prev === 0 ? singleVenue.media.length - 1 : prev - 1
+                                        )
+                                    }
+                                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-custom-white/70 p-2 rounded-full w-10 h-10 cursor-pointer"
+                                >
+                                    &larr;
+                                </button>
+                                <button
+                                    onClick={() =>
+                                        setCurrentImageIndex((prev) =>
+                                            prev === singleVenue.media.length - 1 ? 0 : prev + 1
+                                        )
+                                    }
+                                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-custom-white/70 p-2 rounded-full w-10 h-10 cursor-pointer"
+                                >
+                                    &rarr;
+                                </button>
+                                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                                    {singleVenue.media.map((_, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => handleDotClick(index)}
+                                            className={`w-2 h-2 rounded-full ${index === currentImageIndex ? 'bg-primary-orange' : 'bg-gray-400'}`}
+                                        />
+                                    ))}
+                                </div>
+                            </>
+                        ) : (
+                            <img
+                                className="object-cover w-full h-full"
+                                src={singleVenue.media[0]?.url || "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg"}
+                                alt={singleVenue.media[0]?.alt || singleVenue.name}
+                            />
+                        )}
+                    </div>
+
+                    <div className={"lg:flex mt-10"}>
+                    <div className={"flex flex-col lg:flex-row lg:justify-between mx-[20px] lg:mx-[80px] items-center lg:items-start py-4 justify-center gap-10"}>
+                        <div className={"flex flex-col gap-6 lg:min-w-[280px]"}>
+                            <div className={"flex flex-col gap-2"}>
+                                <h1 className={"font-title text-custom-text text-xl md:text-3xl"}>{singleVenue.name}</h1>
+                                <Rating rating={singleVenue.rating}/>
+                            </div>
+                            <div className={"flex flex-col items-center w-full"}>
+                                <p className={"font-text font-light text-sm leading-6"}>
+                                    {singleVenue.description?.length > 250 && !showMore
+                                        ? `${singleVenue.description.slice(0, 250)}...`
+                                        : singleVenue.description}
+                                </p>
+                                {singleVenue.description?.length > 250 && (
+                                    <button
+                                        onClick={toggleShowMore}
+                                        className="text-primary-orange underline text-sm cursor-pointer hover:opacity-60 w-fit mt-2 items-center"
+                                    >
+                                        {showMore ? "Show Less" : "Show More"}
+                                    </button>
+                                )}
+                            </div>
+
+                            <div className={"flex flex-col mx-auto items-center w-full"}>
+                                {singleVenue.meta && (
+                                    <>
+                                        {Object.entries(singleVenue.meta).some(([_, value]) => value === true) ? (
+                                            <ul className="flex flex-wrap w-full bg-white gap-2 p-2 items-center justify-center border-2 rounded border-secondary-beige">
+                                                {Object.entries(singleVenue.meta)
+                                                    .filter(([_, value]) => value === true)
+                                                    .map(([key]) => (
+                                                        <li key={key} className="text-custom-text px-2 py-1 rounded text-xs md:text-sm flex items-center gap-2 capitalize">
+                                                            <img src={facilityIcons[key]} alt={key} className="h-4 w-4 md:w-6 md:h-6" />
+                                                            {key}
+                                                        </li>
+                                                    ))}
+                                            </ul>
+                                        ) : (
+                                            <div className={"flex py-3 px-4 items-center justify-center border-2 rounded border-secondary-beige"}>
+                                                <p className="text-sm text-custom-medium-gray italic text-center">No facilities specified.</p>
+                                            </div>
+                                            )}
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                        <div className={"lg:ml-20 min-w-[300px]"}>
+                            <div className={"flex flex-col px-6 py-8 gap-4 mx-auto w-full max-w-[400px] items-center rounded border-2 border-secondary-beige bg-custom-white"}>
+                                <h2 className={"font-medium font-text tracking-wider text-xl"}>{singleVenue.price} NOK
+                                    / night</h2>
                                 <BookingCalendar
                                     selectedDates={selectedDates}
                                     setSelectedDates={setSelectedDates}
                                     bookedDates={bookedDates}
+                                    labelClassName="text-sm"
+                                    btnClassName="text-sm"
                                 />
                                 <Guests
                                     adults={adults}
@@ -136,54 +262,48 @@ export function SingleVenue() {
                                     children={children}
                                     setChildren={setChildren}
                                     maxGuests={singleVenue.maxGuests}
+                                    classname={"text-sm"}
                                 />
-                                <p>Total: {nights > 0 ? `${totalPrice} NOK for ${nights} night${nights > 1 ? "s" : ""}` : "Select dates"}</p>
+                                <div
+                                    className={"font-text w-full flex justify-between items-center bg-custom-white font-medium text-lg px-1"}>
+                                    <p>Total</p>
+                                    <p>
+                                        {nights > 0 ? `${totalPrice} NOK` : <span className={"font-light text-base text-custom-medium-gray"}>Select dates</span>}
+                                    </p>
+                                </div>
+                                <div className={"hidden lg:block"}>
+                                    <PrimaryButton text={"Book Stay"} onClick={handleBooking}/>
+                                </div>
+                                {errorMessage && <p className="text-red-600 text-sm">{errorMessage}</p>}
                             </div>
-                            <div className={"flex flex-col mx-auto items-center w-full"}>
-                                <h2 className={"font-medium font-title text-xl"}>Facilities</h2>
-                                {singleVenue.meta && (
-                                    <ul className="flex flex-wrap w-full gap-2 items-center justify-center border border-secondary-beige">
-                                        {Object.entries(singleVenue.meta)
-                                            .filter(([_, value]) => value === true)
-                                            .map(([key]) => (
-                                                <li key={key}
-                                                    className="text-custom-text px-2 py-1 rounded text-base flex items-center gap-2 capitalize">
-                                                    <img src={facilityIcons[key]} alt={key} className="w-6 h-6"/>
-                                                    {key}
-                                                </li>
-                                            ))}
-                                    </ul>
-                                )}
-                            </div>
-                            <div className={"flex flex-col items-center mx-auto text-center"}>
-                                <div className={"flex"}>
-                                    <img src={singleVenue.owner.url?.avatar} alt={singleVenue.owner.url?.alt}/>
-                                    <div className={"flex flex-col items-center"}>
-                                        <p>{singleVenue.owner.name}</p>
-                                        <p>{singleVenue.owner.email}</p>
+                            <div
+                                className={"flex flex-col items-center font-text border-2 border-secondary-beige mt-4 bg-custom-white rounded gap-4 p-6"}>
+                                <div className={"flex items-center gap-3"}>
+                                    <img className={"w-10 h-10 object-cover rounded-full"}
+                                         src={singleVenue.owner.avatar?.url} alt={singleVenue.owner.avatar?.alt}/>
+                                    <div className={"flex flex-col"}>
+                                        <p className={"font-medium text-base"}>{singleVenue.owner.name}</p>
+                                        <p className={"font-light text-sm text-custom-medium-gray"}>
+                                            {singleVenue.owner.email.length > 25 ? singleVenue.owner.email.slice(0, 25) + "..." : singleVenue.owner.email}
+                                        </p>
                                     </div>
                                 </div>
-                                <div className={"w-full bg-secondary-beige h-px"}></div>
-                                <p>{singleVenue.owner.bio}</p>
+                                <div className={"w-full bg-secondary-beige h-px my-2"}></div>
+                                <p className={"font-light text-sm text-custom-medium-gray"}>{singleVenue.owner.bio ? singleVenue.owner.bio : "No bio available."}</p>
                             </div>
                         </div>
+                    </div>
                         <div
-                            className={"fixed bottom-0 left-0 w-screen flex bg-custom-white z-40 justify-between p-4 border-t-2 border-t-secondary-beige font-text items-center"}>
-                            <div>
-                                <p className={"font-medium"}>{singleVenue.price} NOK / night</p>
+                            className={"lg:hidden fixed bottom-0 left-0 w-screen flex bg-custom-white z-40 justify-between p-3 border-t-2 border-t-secondary-beige font-text items-center"}>
+                            <div className={"text-xs flex flex-col gap-1"}>
+                                <p className={"font-medium text-sm"}>{singleVenue.price} NOK / night</p>
                                 {selectedDates?.from && selectedDates?.to ? (
                                     <p>{formatDate(selectedDates.from)} - {formatDate(selectedDates.to)}</p>
                                 ) : (
                                     <p>Select your dates</p>
                                 )}
                             </div>
-                            <button
-                                onClick={handleBooking}
-                                className="border border-primary-orange bg-primary-orange text-custom-white rounded px-6 py-2 hover:bg-custom-white hover:text-primary-orange cursor-pointer"
-                            >
-                                Book Stay
-                            </button>
-
+                            <PrimaryButton className="w-full max-w-[160px] text-sm" text={"Book Stay"} onClick={handleBooking}/>
                         </div>
                     </div>
                     <PopularVenues/>
