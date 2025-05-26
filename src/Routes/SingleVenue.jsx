@@ -88,27 +88,22 @@ export function SingleVenue() {
             return;
         }
 
-        const bookingData = {
+        const bookingPayload = {
             dateFrom: selectedDates.from.toISOString(),
             dateTo: selectedDates.to.toISOString(),
             venueId: id,
-            venueName: singleVenue.name,
-            venuePrice: singleVenue.price,
             guests: adults + children,
-            nights,
-            owner: {
-                name: singleVenue.owner.name,
-                email: singleVenue.owner.email,
-                avatar: singleVenue.owner.avatar?.url,
-            },
         };
 
         try {
-            setBooking(bookingData);
+            const response = await postBooking(bookingPayload);
+            console.log("Booking created:", response);
+
+            setBooking(response); // Hvis du vil bruke state videre
             navigate("/booking-complete");
         } catch (error) {
             console.error("Booking failed:", error);
-            alert("Booking failed. Please try again.");
+            setErrorMessage("Booking failed. Please try again.");
         }
     }
 

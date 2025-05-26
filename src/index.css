@@ -1,13 +1,8 @@
-/*@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Quicksand:wght@300..700&display=swap');*/
-
 @import url('https://fonts.googleapis.com/css2?family=Goudy+Bookletter+1911&family=Marcellus&family=Montserrat+Subrayada:wght@400;700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 @import "tailwindcss";
 
 @theme {
-    /*--font-title: 'Fraunces', serif;*/
-    /*--font-text: 'Quicksand', sans-serif;*/
-
     --breakpoint-tablet: 1100px;
 
     --font-title: 'Marcellus', serif;
@@ -17,11 +12,13 @@
     --color-secondary-beige: #F2EADC;
     --color-bg-color: #FFFCF7;
     --color-custom-white: #FFFEFC;
+    --color-custom-black: #1c1c1c;
     --color-text: #420C1B;
     --color-text-gray: #757575;
     --color-custom-brown: #744B43;
     --color-custom-light-gray: #EAEAEA;
     --color-custom-medium-gray: #717171;
+
 }
 
 .booking-calendar {
@@ -29,7 +26,6 @@
     transform-origin: top center;
 }
 
-/* 📌 Farger for alle valgte datoer (start, slutt og midt) */
 .booking-calendar .rdp-range_start .rdp-day_button,
 .booking-calendar .rdp-range_end .rdp-day_button,
 .booking-calendar .rdp-range_middle .rdp-day_button {
@@ -38,13 +34,11 @@
     border-radius: 0 !important; /* Hvis du ønsker firkanter */
 }
 
-/* 📌 Hover-effekt (beholdes hvis du ønsker) */
 .booking-calendar .rdp-day:hover:not([disabled]) {
     background-color: var(--color-primary-orange);
     color: var(--color-custom-white);
 }
 
-/* 📌 Booked (beholdes som du hadde) */
 .booking-calendar .booked-day {
     background-color: #f8717120;
     color: #f87171;

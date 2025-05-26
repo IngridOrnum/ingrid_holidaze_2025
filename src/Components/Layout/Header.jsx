@@ -130,40 +130,40 @@ export function Header() {
                                         <div className={"w-70 bg-[#EAEAEA] h-[1px]"}></div>
                                         <ul className={"flex flex-col gap-4 items-center lg:hidden"}>
                                             <Link to={"/"} onClick={() => setMenuOpen(false)}>
-                                                <li className={"border border-secondary-beige px-4 py-2 rounded w-[130px] flex justify-center hover:bg-secondary-beige text-custom-brown"}>
+                                                <li className={"border border-secondary-beige px-4 py-2 rounded w-[140px] flex justify-center hover:bg-secondary-beige text-custom-brown"}>
                                                     Home</li>
                                             </Link>
                                             <Link to={"/search-results"} onClick={() => setMenuOpen(false)}>
-                                                <li className={"border border-secondary-beige px-4 py-2 rounded w-[130px] flex justify-center hover:bg-secondary-beige text-custom-brown"}>
+                                                <li className={"border border-secondary-beige px-4 py-2 rounded w-[140px] flex justify-center hover:bg-secondary-beige text-custom-brown"}>
                                                     Search</li>
                                             </Link>
                                             <Link to={"/"} onClick={() => setMenuOpen(false)}>
-                                                <li className={"border border-secondary-beige px-4 py-2 rounded w-[130px] flex justify-center hover:bg-secondary-beige text-custom-brown"}>
+                                                <li className={"border border-secondary-beige px-4 py-2 rounded w-[140px] flex justify-center hover:bg-secondary-beige text-custom-brown"}>
                                                     About</li>
                                             </Link>
                                         </ul>
                                         <ul className={"flex gap-4 flex-col items-center"}>
                                             <Link to={"/profile"} onClick={() => setMenuOpen(false)}>
-                                                <li className={"border border-secondary-beige px-4 py-2 rounded w-[130px] flex justify-center hover:bg-secondary-beige text-custom-brown"}>
+                                                <li className={"border border-secondary-beige px-4 py-2 rounded w-[140px] flex justify-center hover:bg-secondary-beige text-custom-brown"}>
                                                     My
                                                     Profile
                                                 </li>
                                             </Link>
                                             <Link to={"/bookings"} onClick={() => setMenuOpen(false)}>
-                                                <li className={"border border-secondary-beige px-4 py-2 rounded w-[130px] flex justify-center hover:bg-secondary-beige text-custom-brown"}>
+                                                <li className={"border border-secondary-beige px-4 py-2 rounded w-[140px] flex justify-center hover:bg-secondary-beige text-custom-brown"}>
                                                     My Bookings
                                                 </li>
                                             </Link>
                                             {isVenueManager(profile) && (
                                                 <Link to="/my-venues" onClick={() => setMenuOpen(false)}>
-                                                    <li className={`...`}>
+                                                    <li className={"border border-secondary-beige px-4 py-2 rounded w-[140px] flex justify-center hover:bg-secondary-beige text-custom-brown"}>
                                                         My Venues
                                                     </li>
                                                 </Link>
                                             )}
                                         </ul>
                                         <Link to="/logout" onClick={() => setMenuOpen(false)}>
-                                            <SecondaryButton text={"Logout"}/>
+                                            <SecondaryButton text={"Logout"} className={"w-[140px]"}/>
                                         </Link>
                                     </div>
                                 </div>
