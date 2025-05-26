@@ -8,7 +8,7 @@ export function Layout() {
         <>
             <div className={"min-h-screen flex flex-col bg-bg-color"}>
                 <Header/>
-                <main>
+                <main className={"flex-grow"}>
                     <Outlet/>
                     <Toaster position="top-center" reverseOrder={false} />
                 </main>

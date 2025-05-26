@@ -5,6 +5,7 @@ import {AsideMenu} from "../Components/Layout/AsideMenu.jsx";
 import {isVenueManager} from "../Utils/userRole.jsx";
 import {updateProfile} from "../Api/Profile/putProfile.jsx";
 import {toast} from "react-hot-toast";
+import {Crown} from "lucide-react";
 
 export function Profile() {
     const [profile, setProfile] = useState(null);
@@ -76,11 +77,11 @@ export function Profile() {
                 ...updatedProfile,
             });
 
-            toast.success("Profile updated successfully! 🎉");
+            toast.success("Profile updated successfully!");
             setIsEditing(false);
         } catch (error) {
             console.error('Error updating profile:', error);
-            toast.error("Error updating profile 😞");
+            toast.error("Error updating profile");
         }
     }
 
@@ -92,15 +93,15 @@ export function Profile() {
             bio: profile.bio || '',
             role: profile.venueManager ? 'manager' : 'customer',
         });
-        setIsEditing(false); // Lukk skjema
-        toast('Changes cancelled', { icon: '❌' });
+        setIsEditing(false);
+        toast('Changes cancelled');
     }
 
 
     return (
         <div className={"flex min-h-screen"}>
             <AsideMenu profile={profile}/>
-            <div className="flex-1 flex flex-col items-center p-4">
+            <div className="flex-1 flex flex-col items-center p-4 mt-10">
                 {!profile ? (
                     <div className="text-center p-8">Loading profile...</div>
                 ) : (
@@ -112,16 +113,18 @@ export function Profile() {
                             alt={profile.avatar?.alt}
                         />
                         {isVenueManager(profile) && (
-                            <span className="absolute bottom-0 right-0 bg-orange-500 w-5 h-5 rounded-full flex items-center justify-center">
-
-    </span>
+                            <span className="absolute bottom-0 right-0 w-6 flex items-center justify-center h-6 bg-primary-orange rounded-full">
+                                    <Crown className={"w-4 h-4 text-custom-white"}/>
+                                </span>
                         )}
                     </div>
                     <h2 className="text-lg font-semibold">{profile.name}</h2>
-                    <p className="text-orange-500 text-sm mb-2 flex items-center justify-center gap-2">
+                    <p className="text-primary-orange text-sm mb-2 flex items-center justify-center gap-2">
                         {isVenueManager(profile) ? (
                             <>
-                                <span className="inline-block w-4 h-4 bg-orange-500 rounded-full"></span> {/* Midlertidig ikon */}
+                                <span className=" w-6 flex items-center justify-center h-6 bg-primary-orange rounded-full">
+                                    <Crown className={"w-4 h-4 text-custom-white"}/>
+                                </span>
                                 Venue Manager
                             </>
                         ) : (
