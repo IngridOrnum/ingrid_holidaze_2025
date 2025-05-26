@@ -1,6 +1,7 @@
 import {Register} from "../../Api/Auth/Register.jsx";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {PrimaryButton} from "../../Components/Buttons/PrimaryButton.jsx";
 
 export function OnRegister() {
     const [error, setError] = useState(null);
@@ -27,7 +28,7 @@ export function OnRegister() {
         }
 
         try {
-            const response = await Register({ name, email, password, venueManager });
+            const response = await Register({name, email, password, venueManager});
             console.log("Registration success:", response);
 
             navigate("/login");
@@ -43,46 +44,51 @@ export function OnRegister() {
     }
 
     return (
-        <div className={"flex flex-col items-center justify-center"}>
+        <div className={"flex flex-col lg:flex-row items-center justify-center py-10 mb-20 gap-20"}>
+            <div>
+                <h1 className={"font-title text-2xl mb-10 mb:text-4xl"}>Register</h1>
+                <form onSubmit={handleSubmit} className={"flex flex-col gap-2 font-text"}>
+                    <fieldset className="border border-secondary-beige p-4 rounded-md">
+                        <legend className="text-sm font-text font-medium text-gray-700 p-2 flex flex-col gap-2">Register as a:</legend>
+                        <div>
+                            <input type="radio" id="customer" name="role" value="customer" defaultChecked/>
+                            <label htmlFor="customer">Customer</label>
+                        </div>
+                        <div className={"mt-2"}>
+                            <input type="radio" id="manager" name="role" value="manager"/>
+                            <label htmlFor="manager">Venue Manager</label>
+                        </div>
+                    </fieldset>
 
-            <form onSubmit={handleSubmit}>
-                <fieldset className="border border-gray-300 p-4 rounded-md">
-                    <legend className="text-sm font-medium text-gray-700 p-2">Register as a:</legend>
-                    <div>
-                        <input type="radio" id="customer" name="role" value="customer" defaultChecked />
-                        <label htmlFor="customer">Customer</label>
+                    <div className={"flex flex-col"}>
+                        <label htmlFor="username">Username</label>
+                        <input id="username" name="username" type="text" required className="border border-secondary-beige rounded p-2 form-input"/>
                     </div>
-                    <div>
-                        <input type="radio" id="manager" name="role" value="manager"/>
-                        <label htmlFor="manager">Venue Manager</label>
+
+                    <div className={"flex flex-col"}>
+                        <label htmlFor="email">Email address</label>
+                        <input id="email" name="email" type="email" required className="border border-secondary-beige rounded p-2 form-input"/>
                     </div>
-                </fieldset>
 
-                <div>
-                    <label htmlFor="username">Username</label>
-                    <input id="username" name="username" type="text" required className="form-input" />
-                </div>
+                    <div className={"flex flex-col"}>
+                        <label htmlFor="password">Password</label>
+                        <input id="password" name="password" type="password" required className="border border-secondary-beige rounded p-2 form-input"/>
+                    </div>
 
-                <div>
-                    <label htmlFor="email">Email address</label>
-                    <input id="email" name="email" type="email" required className="form-input" />
-                </div>
+                    <div className={"flex flex-col"}>
+                        <label htmlFor="repeat-password">Repeat Password</label>
+                        <input id="repeat-password" name="repeat-password" type="password" required
+                               className="border border-secondary-beige rounded p-2 form-input"/>
+                    </div>
 
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <input id="password" name="password" type="password" required className="form-input" />
-                </div>
+                    {error && <p className="text-red-500 mt-2">{error}</p>}
+                    {success && <p className="text-green-600 mt-2">{success}</p>}
 
-                <div>
-                    <label htmlFor="repeat-password">Repeat Password</label>
-                    <input id="repeat-password" name="repeat-password" type="password" required className="form-input" />
-                </div>
+                    <PrimaryButton type={"submit"} text={"Register"} className={"mt-8"}/>
+                </form>
+            </div>
 
-                {error && <p className="text-red-500 mt-2">{error}</p>}
-                {success && <p className="text-green-600 mt-2">{success}</p>}
-
-                <button type="submit" className="border border-black p-2 m-2 w-full">Register</button>
-            </form>
+            <img className={"w-60 h-auto lg:w-80"} src="/assets/holidaze.jpg" alt="Holidaze"/>
         </div>
     )
 }

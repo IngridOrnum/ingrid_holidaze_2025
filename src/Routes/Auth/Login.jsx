@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {Login} from "../../Api/Auth/Login.jsx";
 import {useNavigate} from "react-router-dom";
 import {useAuthStore} from "../../Store/authStore.jsx";
+import {PrimaryButton} from "../../Components/Buttons/PrimaryButton.jsx";
 
 export function OnLogin() {
     const [error, setError] = useState(null);
@@ -40,32 +41,35 @@ export function OnLogin() {
     }
 
     return (
-        <div className={"flex flex-col items-center justify-center"}>
-            <h1>Login</h1>
-           <form onSubmit={handleSubmit}>
-               <div>
-                   <label htmlFor="email" className="font-light font-text text-ui-black">Email address</label>
-                   <div className="mt-2">
-                       <input id="email" name="email" type="email"  required className="border border-gray form-input w-full max-w-[280px]"/>
-                       <span id="email-alert" className="hidden bold text-red-800">Email must be a valid Noroff student email.</span>
-                   </div>
-               </div>
+        <div className={"flex flex-col lg:flex-row items-center justify-center py-10 mb-20 gap-20"}>
+            <div>
+                <h1 className={"font-title text-2xl mb-10 mb:text-4xl"}>Login</h1>
+                <form onSubmit={handleSubmit} className={"font-text font-light"}>
+                    <div>
+                        <label htmlFor="email" className="font-light font-text text-ui-black">Email address</label>
+                        <div className="mt-2">
+                            <input id="email" name="email" type="email"  required className="border border-secondary-beige rounded p-2 form-input w-full max-w-[280px]"/>
+                            <span id="email-alert" className="hidden bold text-red-800">Email must be a valid Noroff student email.</span>
+                        </div>
+                    </div>
 
-               <div>
-                   <div className="flex items-center justify-between">
-                       <label htmlFor="password" className="font-light font-text text-ui-black">Password</label>
-                   </div>
-                   <div className="mt-2">
-                       <input id="password" name="password" type="password" required className="border border-gray form-input w-full max-w-[280px]"/>
-                       <span id="password-alert" className="hidden bold text-red-800">Password must be at least 8 characters long.</span>
-                   </div>
-               </div>
-               {success && <p className="text-green-600 mt-2">{success}</p>}
-               {error && <p className="text-red-500 mt-2">{error}</p>}
+                    <div>
+                        <div className="flex items-center justify-between">
+                            <label htmlFor="password" className="font-light font-text text-ui-black">Password</label>
+                        </div>
+                        <div className="mt-2">
+                            <input id="password" name="password" type="password" required className="border border-secondary-beige rounded p-2 form-input w-full max-w-[280px]"/>
+                            <span id="password-alert" className="hidden bold text-red-800">Password must be at least 8 characters long.</span>
+                        </div>
+                    </div>
+                    {success && <p className="text-green-600 mt-2">{success}</p>}
+                    {error && <p className="text-red-500 mt-2">{error}</p>}
 
-               <button type={"submit"} className={"border border-black p-2 m-2 w-full"}>Login</button>
-           </form>
+                    <PrimaryButton type={"submit"} text={"Login"} className={"mt-8"}/>
+                </form>
+            </div>
 
+            <img className={"w-60 h-auto lg:w-80"} src="/assets/holidaze.jpg" alt="Holidaze"/>
 
         </div>
     )
