@@ -17,6 +17,9 @@ export function MyVenues() {
     const [modalOpen, setModalOpen] = useState(false);
     const [venueToDelete, setVenueToDelete] = useState(null);
 
+    const [toast, setToast] = useState({ message: '', type: '' });
+
+
     const user = useAuthStore((state) => state.user);
 
     useEffect(() => {
@@ -40,8 +43,27 @@ export function MyVenues() {
         return <div className="text-center p-8">You must be logged in to view this page.</div>;
     }
 
+    useEffect(() => {
+        if (toast.message) {
+            const timer = setTimeout(() => setToast({ message: '', type: '' }), 6000); // 6 sekunder
+            return () => clearTimeout(timer);
+        }
+    }, [toast.message]);
+
+
     return (
         <div className="flex min-h-screen py-4">
+            {toast.message && (
+                <div
+                    className={`fixed top-4 right-4 z-50 px-4 py-2 rounded shadow-lg text-white ${
+                        toast.type === "success" ? "bg-primary-orange"
+                            : toast.type === "error" ? "bg-red-900"
+                                : "bg-yellow-400"
+                    }`}
+                >
+                    {toast.message}
+                </div>
+            )}
             <AsideMenu profile={profile} />
             <div className="flex flex-col w-full items-center p-4 gap-2">
                 {!profile ? (
@@ -49,15 +71,15 @@ export function MyVenues() {
                 ) : (
                     <>
                 <h1 className="font-title text-2xl mb-6 md:text-3xl lg:text-4xl lg:mb-12">My Venues</h1>
-                <div className="flex gap-4">
+                <div className="flex gap-2 font-text text-sm">
                     <button
-                        className={`cursor-pointer rounded border border-secondary-beige p-2 w-40 ${view === 'list' ? 'bg-secondary-beige' : ''}`}
+                        className={`cursor-pointer rounded border border-secondary-beige px-1 py-3 w-[148px] ${view === 'list' ? 'bg-secondary-beige' : ''}`}
                         onClick={() => setView('list')}
                     >
                         My Venues
                     </button>
                     <button
-                        className={`cursor-pointer rounded border border-secondary-beige p-2 w-40 ${view === 'create' ? 'bg-secondary-beige' : ''}`}
+                        className={`cursor-pointer rounded border border-secondary-beige px-1 py-3 w-[148px] ${view === 'create' ? 'bg-secondary-beige' : ''}`}
                         onClick={() => setView('create')}
                     >
                         Create New Venue
@@ -101,12 +123,16 @@ export function MyVenues() {
                         )}
 
                         {view === 'create' && (
-                            <CreateVenueForm onSuccess={async () => {
-                                const response = await readProfile(user.name);
-                                setProfile(response.data);
-                                setView('list')} }
+                            <CreateVenueForm
+                                onSuccess={async () => {
+                                    const response = await readProfile(user.name);
+                                    setProfile(response.data);
+                                    setView('list');
+                                }}
+                                setToast={setToast}
                             />
                         )}
+
                         {view === 'edit' && selectedVenue && (
                             <EditVenueForm
                                 venueData={selectedVenue}
@@ -120,10 +146,9 @@ export function MyVenues() {
                                     setView('list');
                                     setSelectedVenue(null);
                                 }}
+                                setToast={setToast}
                             />
                         )}
-
-
                     </>
                     )}
             </div>

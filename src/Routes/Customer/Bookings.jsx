@@ -106,7 +106,7 @@ export function Bookings() {
             <div className="flex flex-col w-full items-center p-4 gap-2">
                 <h1 className="font-title text-2xl mb-6 md:text-3xl lg:text-4xl lg:mb-12">My Bookings</h1>
                 <div className={"flex gap-2"}>
-                    <div className={"flex font-light gap-4"}>
+                    <div className={"flex font-light gap-4 font-text text-sm"}>
                         <button
                             className={`cursor-pointer rounded border border-secondary-beige p-2 w-30 ${filter === "previous" ? "bg-secondary-beige" : ""}`}
                             onClick={() => setFilter("previous")}
