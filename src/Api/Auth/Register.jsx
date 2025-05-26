@@ -1,4 +1,4 @@
-import {API_AUTH_REGISTER} from "../constants.jsx";
+import {API_AUTH_REGISTER} from "../Constants.jsx";
 
 export async function Register({name, email, password, venueManager = false}) {
 
