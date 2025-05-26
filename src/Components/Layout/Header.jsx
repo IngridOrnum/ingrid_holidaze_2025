@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import {useAuthStore} from "../../Store/authStore.jsx";
 import {isVenueManager} from "../../Utils/userRole.jsx";
 import {readProfile} from "../../Store/userStore.jsx";
+import {SecondaryButton} from "../Buttons/SecondaryButton.jsx";
 
 export function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -162,10 +163,7 @@ export function Header() {
                                             )}
                                         </ul>
                                         <Link to="/logout" onClick={() => setMenuOpen(false)}>
-                                            <button
-                                                className="text-primary-orange border border-primary-orange cursor-pointer w-[130px] py-2 rounded hover:bg-primary-orange hover:text-custom-white">
-                                                Logout
-                                            </button>
+                                            <SecondaryButton text={"Logout"}/>
                                         </Link>
                                     </div>
                                 </div>

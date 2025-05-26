@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { DayPicker } from "react-day-picker";
 import 'react-day-picker/dist/style.css';
 
-export function BookingCalendar({ selectedDates, setSelectedDates, bookedDates = [] }) {
+export function BookingCalendar({ selectedDates, setSelectedDates, bookedDates = [], labelClassName = "", btnClassName = "" }) {
     const [showCalendar, setShowCalendar] = useState(false);
     const calendarRef = useRef(null);
 
@@ -32,6 +32,18 @@ export function BookingCalendar({ selectedDates, setSelectedDates, bookedDates =
         };
     }, [showCalendar]);
 
+    const today = new Date();
+    const disabledDays = [
+        { before: new Date() },
+        ...bookedDates,
+    ];
+
+
+    function isAvailable(date) {
+        return date >= today && !bookedDates.some(d =>
+            d.toDateString() === date.toDateString()
+        );
+    }
 
     const formattedRange = selectedDates?.from
         ? `${formatDate(selectedDates.from)} - ${formatDate(selectedDates.to || selectedDates.from)}`
@@ -39,9 +51,9 @@ export function BookingCalendar({ selectedDates, setSelectedDates, bookedDates =
 
     return (
         <div ref={calendarRef} className="w-full relative flex flex-col font-text gap-1">
-        <label className={"block font-medium tracking-wider"}>Dates</label>
+            <label className={`block font-medium tracking-wider ${labelClassName}`}>Dates</label>
             <button
-                className="border border-custom-light-gray rounded p-2 w-full text-left cursor-pointer"
+                className={`border border-custom-light-gray rounded p-2 w-full text-left cursor-pointer ${btnClassName}`}
                 onClick={() => setShowCalendar(prev => !prev)}
             >
                 {formattedRange}
@@ -50,21 +62,26 @@ export function BookingCalendar({ selectedDates, setSelectedDates, bookedDates =
             {showCalendar && (
                 <div className="absolute top-full left-0 bg-white z-10 mt-2  p-2 shadow rounded w-full overflow-hidden">
 
-                <DayPicker
+                    <DayPicker
                         mode="range"
                         selected={selectedDates}
                         onSelect={setSelectedDates}
                         numberOfMonths={1}
+                        weekStartsOn={1}
                         pagedNavigation
                         modifiers={{
                             booked: bookedDates,
+                            available: isAvailable,
                         }}
                         modifiersClassNames={{
                             booked: 'booked-day',
+                            available: 'available-day',
+                            selected: 'my-selected'
                         }}
-                        disabled={bookedDates}
-                        className="text-sm w-full"
+                        disabled={disabledDays}
+                        className="booking-calendar"
                     />
+
                 </div>
             )}
         </div>

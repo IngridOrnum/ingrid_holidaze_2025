@@ -28,11 +28,15 @@ export function VenueCard({ venue }) {
         <Link to={`/single-venue/${venue.id}`}>
             <div className="flex flex-col overflow-hidden rounded w-[240px] cursor-pointer shadow transition-transform duration-200 hover:scale-[1.02] hover:shadow-md">
             <div className="relative">
-                    <Rating rating={venue.rating ?? 0}/>
-                    <img
+                <Rating rating={venue.rating ?? 0} className="absolute right-2 top-2" />
+                <img
                         src={firstImage}
                         alt={imageAlt}
                         className="h-[160px] w-full object-cover"
+                        onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg";
+                        }}
                     />
                 </div>
                 <div className="flex flex-col p-5 gap-6">
