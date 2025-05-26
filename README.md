@@ -1,4 +1,4 @@
-# Holidaze 🌿
+# Holidaze
 
 **Holidaze** is a professional platform for discovering and booking unique venues. As a customer, you can browse, filter, and book exciting stays, while venue managers can list and manage their own venues.
 
