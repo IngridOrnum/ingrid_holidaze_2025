@@ -5,6 +5,12 @@ import {useAuthStore} from "../../Store/authStore.jsx";
 import {deleteBooking} from "../../Api/Booking/deleteBooking.jsx";
 import { toast } from 'react-hot-toast';
 import { useNavigate } from "react-router-dom";
+import {Modal} from "../../Components/Modals/Modal.jsx";
+import {MapPin, Banknote, Calendar} from "lucide-react";
+import {SecondaryButton} from "../../Components/Buttons/SecondaryButton.jsx";
+import {PrimaryButton} from "../../Components/Buttons/PrimaryButton.jsx";
+import {Link} from "react-router-dom";
+import {SkeletonBookingVenue} from "../../Components/Cards/SkeletonBookingVenue.jsx";
 
 export function Bookings() {
     const profile = useAuthStore((state) => state.user);
@@ -18,6 +24,27 @@ export function Bookings() {
     const upcomingBookings = bookings.filter(booking => new Date(booking.dateFrom) >= now);
     const previousBookings = bookings.filter(booking => new Date(booking.dateFrom) < now);
     const filteredBookings = filter === "upcoming" ? upcomingBookings : previousBookings;
+
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedBookingId, setSelectedBookingId] = useState(null);
+
+    function getLocationOrDefault(location, fallback) {
+        return location ? formatLocation(location) : fallback;
+    }
+
+    function formatLocation(str, maxLength = 15) {
+        if (!str) return "";
+        const formatted = str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+        return formatted.length > maxLength
+            ? formatted.slice(0, maxLength - 1) + "…"
+            : formatted;
+    }
+
+
+    function handleOpenModal(bookingId) {
+        setSelectedBookingId(bookingId);
+        setModalOpen(true);
+    }
 
     useEffect(() => {
         document.title = 'Holidaze - My Bookings';
@@ -40,102 +67,141 @@ export function Bookings() {
         fetchBookings();
     }, [profile?.name]);
 
-    async function handleCancel(bookingId) {
-        toast((t) => (
-            <div className="flex flex-col items-center gap-4 p-4">
-                <p>Are you sure you want to cancel this booking?</p>
-                <div className="flex gap-4">
-                    <button
-                        onClick={async () => {
-                            toast.dismiss(t.id);
-                            try {
-                                await deleteBooking(bookingId);
-                                setBookings((prevBookings) => prevBookings.filter((booking) => booking.id !== bookingId));
-                                toast.success('Booking cancelled successfully! ✅');
-                            } catch (err) {
-                                console.error('Error cancelling booking:', err);
-                                setError('Failed to cancel booking. Please try again.');
-                                toast.error('Failed to cancel booking ❌');
-                            }
-                        }}
-                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-                    >
-                        Yes, Cancel
-                    </button>
-                    <button
-                        onClick={() => toast.dismiss(t.id)}
-                        className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
-                    >
-                        No, Keep
-                    </button>
-                </div>
-            </div>
-        ), { duration: 10000 });
+    async function handleConfirmCancel() {
+        try {
+            await deleteBooking(selectedBookingId);
+            setBookings((prev) => prev.filter((b) => b.id !== selectedBookingId));
+            toast.success('Booking cancelled successfully!');
+        } catch (err) {
+            console.error('Error cancelling booking:', err);
+            setError('Failed to cancel booking. Please try again.');
+            toast.error('Failed to cancel booking');
+        } finally {
+            setModalOpen(false);
+        }
     }
 
+    function formatDate(date) {
+        const d = new Date(date);
+        return d.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+        });
+    }
+
+    function calculateNights(from, to) {
+        const start = new Date(from);
+        const end = new Date(to);
+        const diffInMs = end - start;
+        const nights = diffInMs / (1000 * 60 * 60 * 24);
+        return nights;
+    }
+
+
+
     return (
-        <div className={"flex min-h-screen"}>
+        <div className={"flex min-h-screen py-4"}>
             <AsideMenu profile={profile}/>
             <div className="flex flex-col w-full items-center p-4 gap-2">
-                <h1 className="text-xl font-bold mb-4">My Bookings</h1>
+                <h1 className="font-title text-2xl mb-6 md:text-3xl lg:text-4xl lg:mb-12">My Bookings</h1>
                 <div className={"flex gap-2"}>
-                    <div className={"flex gap-2"}>
+                    <div className={"flex font-light gap-4"}>
                         <button
-                            className={`border p-2 ${filter === "previous" ? "bg-gray-300 font-semibold" : ""}`}
+                            className={`cursor-pointer rounded border border-secondary-beige p-2 w-30 ${filter === "previous" ? "bg-secondary-beige" : ""}`}
                             onClick={() => setFilter("previous")}
                         >
                             Previous
                         </button>
                         <button
-                            className={`border p-2 ${filter === "upcoming" ? "bg-gray-300 font-semibold" : ""}`}
+                            className={`cursor-pointer border border-secondary-beige rounded p-2 w-30 ${filter === "upcoming" ? "bg-secondary-beige" : ""}`}
                             onClick={() => setFilter("upcoming")}
                         >
                             Upcoming
                         </button>
                     </div>
-
                 </div>
+                <div className={"h-px w-full bg-secondary-beige mt-4"}></div>
                 {loading ? (
-                    <div>Loading bookings...</div>
+                    <ul className="space-y-4 w-full max-w-xl mx-auto">
+                        {[...Array(3)].map((_, index) => (
+                            <SkeletonBookingVenue key={index} />
+                        ))}
+                    </ul>
                 ) : error ? (
                     <div>Error loading bookings: {error}</div>
-                ) : bookings.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center mt-20">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-24 w-24 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16h8M8 12h8m-7-8h6a2 2 0 012 2v16a2 2 0 01-2 2H9a2 2 0 01-2-2V6a2 2 0 012-2z" />
-                        </svg>
-                        <h2 className="mt-4 text-xl text-gray-500">You have no bookings yet</h2>
-                        <a href="/search-results" className="mt-6 inline-block px-6 py-3 bg-primary-blue text-white rounded hover:bg-primary-dark transition">
-                            Find venues
-                        </a>
+                ) : filteredBookings.length === 0 ? (
+                    <div className={"flex flex-col gap-10 items-center mt-2 md:gap-8"}>
+                        <h2 className="font-text mt-4 text-sm md:text-lg text-gray-500">
+                            {filter === "upcoming"
+                                ? "You have no upcoming bookings yet."
+                                : "You have no previous bookings yet."}
+                        </h2>
+                        <Link to={"/search-results"}>
+                            <PrimaryButton text={"Browse Venues"} />
+                        </Link>
                     </div>
                 ) : (
                     <ul className="space-y-4">
-                        {filteredBookings.map((booking) => (
-                            <li key={booking.id} className="border p-4 rounded">
-                                <p><strong>Venue:</strong> {booking.venue.name}</p>
-                                <p><strong>Date from:</strong> {booking.dateFrom}</p>
-                                <p><strong>Date to:</strong> {booking.dateTo}</p>
-                                {filter === "upcoming" && (
-                                    <button
-                                        onClick={() => handleCancel(booking.id)}
-                                        className="mt-2 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition"
-                                    >
-                                        Cancel Booking
-                                    </button>
-                                )}
-                                {filter === "previous" && (
-                                    <button
-                                        onClick={() => navigate(`/single-venue/${booking.venue.id}`)}
-                                        className="mt-2 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition"
-                                    >
-                                        Book Again
-                                    </button>
-                                )}
-                            </li>
-                        ))}
+                        {filteredBookings.map((booking) => {
+                            const city = getLocationOrDefault(booking.venue.location?.city, "Oslo");
+                            const country = getLocationOrDefault(booking.venue.location?.country, "Norway");
+                            const firstImage = booking.venue.media?.[0]?.url || "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg";
+                            const imageAlt = booking.venue.media?.[0]?.alt || "Venue image";
+                            const nights = calculateNights(booking.dateFrom, booking.dateTo);
+                            const totalPrice = nights * booking.venue.price;
+
+                            return (
+                                <li key={booking.id} className="p-4 mt-4 rounded flex flex-col gap-2 relative">
+                                    <div className="rounded flex gap-6 flex-col md:flex-row items-center">
+                                        <img
+                                            src={firstImage}
+                                            alt={imageAlt}
+                                            className="h-40 w-52 md:h-44 md:w-56 object-cover rounded"
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg";
+                                            }}
+                                        />
+                                        <div className={"font-text flex flex-col gap-2"}>
+                                            <p className={"font-medium md:text-lg lg:text-2xl"}>{booking.venue.name}</p>
+                                            <div className={"flex flex-col gap-2 font-text text-sm"}>
+                                                <p className="flex gap-2 items-center whitespace-nowrap overflow-hidden text-ellipsis">
+                                                    <MapPin className="font-light w-4 h-4" />
+                                                    {[city, country].filter(Boolean).join(', ')}
+                                                </p>
+                                                <div className={"flex items-center gap-2"}>
+                                                    <Calendar className="font-light w-4 h-4" />
+                                                    <p>{formatDate(booking.dateFrom)} - {formatDate(booking.dateTo)}</p>
+                                                </div>
+                                                <div className={"flex gap-2"}>
+                                                    <div className={"flex items-center gap-2"}>
+                                                        <Banknote className="font-light w-4 h-4" />
+                                                        <p className={"font-medium"}>Total:</p>
+                                                    </div>
+                                                    <p>{totalPrice} NOK</p>
+                                                </div>
+                                            </div>
+                                            {filter === "upcoming" && (
+                                                <SecondaryButton className={"text-sm mt-4 lg:h-fit lg:py-3"} onClick={() => handleOpenModal(booking.id)} text={"Cancel Booking"}/>
+                                            )}
+                                            {filter === "previous" && (
+                                                <SecondaryButton className={"text-sm mt-4 lg:h-fit lg:py-3"}  onClick={() => navigate(`/single-venue/${booking.venue.id}`)} text={"Book Again"}/>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className={"h-px w-full bg-secondary-beige mt-8"}></div>
+                                </li>
+                            )
+                        })}
                     </ul>
                 )}
+                <Modal
+                    isOpen={modalOpen}
+                    onClose={() => setModalOpen(false)}
+                    onConfirm={handleConfirmCancel}
+                    message="Are you sure you want to cancel this booking?"
+                />
             </div>
         </div>
     )
