@@ -1,4 +1,4 @@
-import { API_AUTH_LOGIN } from "../constants.jsx";
+import { API_AUTH_LOGIN } from "../Constants.jsx";
 
 export async function Login({ email, password }) {
     try {
