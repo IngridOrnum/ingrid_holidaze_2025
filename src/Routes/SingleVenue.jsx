@@ -96,14 +96,16 @@ export function SingleVenue() {
             venuePrice: singleVenue.price,
             guests: adults + children,
             nights,
+            owner: {
+                name: singleVenue.owner.name,
+                email: singleVenue.owner.email,
+                avatar: singleVenue.owner.avatar?.url,
+            },
         };
 
         try {
-            const bookingResponse = await postBooking(bookingData);
-            console.log("Booking successful:", bookingResponse);
-
             setBooking(bookingData);
-            navigate("/confirm-booking");
+            navigate("/booking-complete");
         } catch (error) {
             console.error("Booking failed:", error);
             alert("Booking failed. Please try again.");
