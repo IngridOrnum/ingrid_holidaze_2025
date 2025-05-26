@@ -152,7 +152,7 @@ export function Bookings() {
                             const totalPrice = nights * booking.venue.price;
 
                             return (
-                                <li key={booking.id} className="p-4 mt-4 rounded flex flex-col gap-2 relative">
+                                <li key={booking.id} className="p-4 mt-4 rounded flex flex-col gap-2">
                                     <div className="rounded flex gap-6 flex-col md:flex-row items-center">
                                         <img
                                             src={firstImage}

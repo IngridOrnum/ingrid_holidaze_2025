@@ -6,12 +6,16 @@ import {useAuthStore} from "../../Store/authStore.jsx";
 import {readProfile} from "../../Store/userStore.jsx";
 import {EditVenueForm} from "../../Components/Forms/editVenueForm.jsx";
 import {DeleteVenue} from "../../Api/Venue/deleteVenue.jsx";
+import {Modal} from "../../Components/Modals/Modal.jsx";
+import {Pencil, Trash2} from "lucide-react";
 
 
-export function MyVenues({venues = [] }) {
+export function MyVenues() {
     const [profile, setProfile] = useState(null);
     const [view, setView] = useState('list');
     const [selectedVenue, setSelectedVenue] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [venueToDelete, setVenueToDelete] = useState(null);
 
     const user = useAuthStore((state) => state.user);
 
@@ -27,9 +31,8 @@ export function MyVenues({venues = [] }) {
                 console.error("Error fetching profile:", error);
             }
         }
-
         if (user) {
-            fetchProfile();
+            void fetchProfile();
         }
     }, [user]);
 
@@ -38,63 +41,56 @@ export function MyVenues({venues = [] }) {
     }
 
     return (
-        <div className="flex min-h-screen">
+        <div className="flex min-h-screen py-4">
             <AsideMenu profile={profile} />
-            <div className="flex-1 flex flex-col items-center p-4">
+            <div className="flex flex-col w-full items-center p-4 gap-2">
                 {!profile ? (
                     <div className="text-center p-8">Loading profile...</div>
                 ) : (
                     <>
-                <h1>My Venues</h1>
+                <h1 className="font-title text-2xl mb-6 md:text-3xl lg:text-4xl lg:mb-12">My Venues</h1>
                 <div className="flex gap-4">
                     <button
-                        className={`rounded border border-custom-light-gray px-4 py-2 ${view === 'list' ? 'bg-gray-100' : ''}`}
+                        className={`cursor-pointer rounded border border-secondary-beige p-2 w-40 ${view === 'list' ? 'bg-secondary-beige' : ''}`}
                         onClick={() => setView('list')}
                     >
                         My Venues
                     </button>
                     <button
-                        className={`rounded border border-custom-light-gray px-4 py-2 ${view === 'create' ? 'bg-gray-100' : ''}`}
+                        className={`cursor-pointer rounded border border-secondary-beige p-2 w-40 ${view === 'create' ? 'bg-secondary-beige' : ''}`}
                         onClick={() => setView('create')}
                     >
                         Create New Venue
                     </button>
                 </div>
-                <div className="h-px w-full bg-custom-light-gray mt-4" />
+                <div className="h-px w-full bg-custom-light-gray mt-4 rounded flex flex-col gap-2" />
                         {view === 'list' && (
-                            <div className="flex flex-wrap gap-6 justify-center">
+                            <div className="flex flex-wrap gap-6 justify-center mt-4">
                                 {profile.venues && profile.venues.length > 0 ? (
                                     profile.venues.map((venue) => (
-                                        <div key={venue.id} className="flex flex-col items-center gap-4">
+                                        <div key={venue.id} className="flex flex-col items-center gap-3">
                                         <VenueCard key={venue.id} venue={venue} />
                                             <div className={"flex gap-4"}>
                                                 <button
-                                                    className="border p-2 cursor-pointer text-green-700"
+                                                    className="rounded flex items-center gap-2 justify-center w-28 border p-2 cursor-pointer text-custom-black border-secondary-beige hover:bg-secondary-beige"
                                                     onClick={() => {
                                                         setSelectedVenue(venue);
                                                         setView('edit');
                                                     }}
                                                 >
-                                                    Edit
+                                                    <Pencil className={"w-4 h-4 text-green-700"}/>
+                                                    <p>Edit</p>
                                                 </button>
                                                 <button
-                                                    className="border p-2 cursor-pointer text-red-700"
-                                                    onClick={async () => {
-                                                        const confirmed = window.confirm(`Are you sure you want to delete "${venue.name}"?`);
-                                                        if (confirmed) {
-                                                            try {
-                                                                await DeleteVenue(venue.id);
-                                                                const response = await readProfile(user.name);
-                                                                setProfile(response.data);
-                                                            } catch (error) {
-                                                                alert("Failed to delete venue: " + error.message);
-                                                            }
-                                                        }
+                                                    className="border rounded flex items-center justify-center gap-2 w-28 p-2 cursor-pointer text-custom-black border-secondary-beige border-secondary-beige hover:bg-secondary-beige"
+                                                    onClick={() => {
+                                                        setVenueToDelete(venue);
+                                                        setModalOpen(true);
                                                     }}
                                                 >
-                                                    Delete
+                                                    <Trash2 className={"w-5 h-5 text-red-700"}/>
+                                                    <p>Delete</p>
                                                 </button>
-
                                             </div>
                                         </div>
                                     ))
@@ -131,6 +127,26 @@ export function MyVenues({venues = [] }) {
                     </>
                     )}
             </div>
+            <Modal
+                isOpen={modalOpen}
+                onClose={() => {
+                    setModalOpen(false);
+                    setVenueToDelete(null);
+                }}
+                onConfirm={async () => {
+                    try {
+                        if (!venueToDelete) return;
+                        await DeleteVenue(venueToDelete.id);
+                        const response = await readProfile(user.name);
+                        setProfile(response.data);
+                        setModalOpen(false);
+                        setVenueToDelete(null);
+                    } catch (error) {
+                        alert("Failed to delete venue: " + error.message);
+                    }
+                }}
+                message={`Are you sure you want to delete "${venueToDelete?.name}"?`}
+            ></Modal>
         </div>
     );
 }
