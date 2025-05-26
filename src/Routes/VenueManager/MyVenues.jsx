@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { AsideMenu } from "../../Components/Layout/AsideMenu.jsx";
-import { CreateVenueForm } from "../../Components/Forms/CreateVenueForm.jsx";
+import { CreateVenueForm } from "../../Components/Forms/createVenueForm.jsx";
 import { VenueCard } from "../../Components/Cards/VenueCard.jsx";
 import { useAuthStore } from "../../Store/authStore.jsx";
 import { EditVenueForm } from "../../Components/Forms/editVenueForm.jsx";
