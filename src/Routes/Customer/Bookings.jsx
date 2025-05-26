@@ -20,13 +20,20 @@ export function Bookings() {
     const [filter, setFilter] = useState("upcoming");
     const navigate = useNavigate();
 
-    const now = new Date();
-    const upcomingBookings = bookings.filter(booking => new Date(booking.dateFrom) >= now);
-    const previousBookings = bookings.filter(booking => new Date(booking.dateFrom) < now);
-    const filteredBookings = filter === "upcoming" ? upcomingBookings : previousBookings;
-
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedBookingId, setSelectedBookingId] = useState(null);
+
+    function getUtcDateOnly(dateString) {
+        const date = new Date(dateString);
+        return `${date.getUTCFullYear()}-${(date.getUTCMonth() + 1).toString().padStart(2, "0")}-${date.getUTCDate().toString().padStart(2, "0")}`;
+    }
+
+    const today = new Date();
+    const todayUtc = `${today.getUTCFullYear()}-${(today.getUTCMonth() + 1).toString().padStart(2, "0")}-${today.getUTCDate().toString().padStart(2, "0")}`;
+
+    const upcomingBookings = bookings.filter((booking) => getUtcDateOnly(booking.dateFrom) >= todayUtc);
+    const previousBookings = bookings.filter((booking) => getUtcDateOnly(booking.dateFrom) < todayUtc);
+    const filteredBookings = filter === "upcoming" ? upcomingBookings : previousBookings;
 
     function getLocationOrDefault(location, fallback) {
         return location ? formatLocation(location) : fallback;
@@ -40,7 +47,6 @@ export function Bookings() {
             : formatted;
     }
 
-
     function handleOpenModal(bookingId) {
         setSelectedBookingId(bookingId);
         setModalOpen(true);
@@ -49,7 +55,8 @@ export function Bookings() {
     useEffect(() => {
         document.title = 'Holidaze - My Bookings';
 
-        async function fetchBookings () {
+        const fetchBookings = async () => {
+
             if (!profile?.name) {
                 setLoading(false);
                 return;
@@ -58,13 +65,19 @@ export function Bookings() {
             try {
                 const data = await getBookingsByUser(profile.name);
                 setBookings(data.bookings);
+                console.log("RAW BOOKINGS:", data.bookings);
+
             } catch(err) {
                 setError(err.message);
             } finally {
                 setLoading(false);
             }
-        }
+        };
+
         fetchBookings();
+        console.log("TODAY UTC:", todayUtc);
+        console.log("FILTERED BOOKINGS:", filteredBookings);
+
     }, [profile?.name]);
 
     async function handleConfirmCancel() {
@@ -97,8 +110,6 @@ export function Bookings() {
         const nights = diffInMs / (1000 * 60 * 60 * 24);
         return nights;
     }
-
-
 
     return (
         <div className={"flex min-h-screen py-4"}>

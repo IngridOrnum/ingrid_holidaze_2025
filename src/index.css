@@ -1,13 +1,8 @@
-/*@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Quicksand:wght@300..700&display=swap');*/
-
 @import url('https://fonts.googleapis.com/css2?family=Goudy+Bookletter+1911&family=Marcellus&family=Montserrat+Subrayada:wght@400;700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 @import "tailwindcss";
 
 @theme {
-    /*--font-title: 'Fraunces', serif;*/
-    /*--font-text: 'Quicksand', sans-serif;*/
-
     --breakpoint-tablet: 1100px;
 
     --font-title: 'Marcellus', serif;
