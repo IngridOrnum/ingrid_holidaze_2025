@@ -1,4 +1,4 @@
-import { API_PROFILES } from "../constants.jsx";
+import { API_PROFILES } from "../Constants.jsx";
 import { getHeaders } from "../Headers.jsx";
 
 export async function getVenuesByProfile(username) {
